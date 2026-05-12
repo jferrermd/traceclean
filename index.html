@@ -2886,7 +2886,8 @@ async function pullFromGitHub(manual){
     const localToken = localStorage.getItem('tc_ghtoken');
     Object.assign(DB, data);
     if(localToken && DB.settings) DB.settings.ghToken = localToken;
-    localStorage.setItem('tc_db3', JSON.stringify(DB));
+    // Try localStorage but don't fail if quota exceeded (mobile devices)
+    try{ localStorage.setItem('tc_db3', JSON.stringify(DB)); }catch(e){ console.log('Storage full - using memory only'); }
     if(manual){ alert('✅ Pulled: '+data.clients.length+' clients, '+(data.hoods||[]).length+' hoods.'); render(); }
     return true;
   }catch(e){
