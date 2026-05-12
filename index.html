@@ -2165,7 +2165,7 @@ function vOData(){
       </div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-      <button class="pri sm" onclick="pushToGitHub(true)">☁️ Push data to GitHub now</button>
+      <button class="pri sm" onclick="cleanAndPush()">☁️ Push data to GitHub now</button>
       <button class="sm" onclick="pullFromGitHub(true)">⬇ Pull from GitHub</button>
       <button class="sm" onclick="testGHToken()">🔑 Test token</button>
       <span id="sync-status" style="font-size:11px;color:var(--g600)">
@@ -2790,6 +2790,20 @@ const GH_RAW  = `https://raw.githubusercontent.com/${GH_REPO}/main/${GH_FILE}`;
 const GH_API  = `https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`;
 
 
+
+function cleanAndPush(){
+  // Remove any token from DB object before pushing
+  if(DB.settings){
+    delete DB.settings.ghToken;
+    delete DB.settings.gistToken;
+    delete DB.settings.apiKey;
+  }
+  // Re-save clean DB to localStorage
+  localStorage.setItem('tc_db3', JSON.stringify(DB));
+  // Now push
+  pushToGitHub(true);
+}
+
 async function testGHToken(){
   const token=(localStorage.getItem('tc_ghtoken')||'').trim();
   if(!token){alert('No token found. Paste your token first.');return;}
@@ -2813,10 +2827,12 @@ async function pushToGitHub(manual){
     const getMeta=await fetch(GH_API,{headers:{'Authorization':'token '+token}});
     if(getMeta.ok){const m=await getMeta.json();sha=m.sha||'';}
     else if(getMeta.status!==404){if(manual)alert('Error reading file: '+getMeta.status);return false;}
-    // Strip any credentials from DB before pushing to GitHub
+    // Deep clean: remove any GitHub tokens anywhere in the DB
     const dbClean=JSON.parse(JSON.stringify(DB));
     if(dbClean.settings){delete dbClean.settings.ghToken;delete dbClean.settings.gistToken;delete dbClean.settings.apiKey;}
-    const jsonStr=JSON.stringify(dbClean,null,2);
+    // Regex scrub: remove any ghp_ tokens lurking in any field
+    let jsonStr=JSON.stringify(dbClean,null,2);
+    jsonStr=jsonStr.replace(/ghp_[A-Za-z0-9]{36,}/g,'[REMOVED]');
     const encoded=btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g,(_,p)=>String.fromCharCode('0x'+p)));
     const payload={message:'TraceClean sync '+new Date().toISOString(),content:encoded};
     if(sha)payload.sha=sha;
