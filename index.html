@@ -2835,10 +2835,16 @@ async function pushToGitHub(manual){
     // Deep clean: remove any GitHub tokens anywhere in the DB
     const dbClean=JSON.parse(JSON.stringify(DB));
     if(dbClean.settings){delete dbClean.settings.ghToken;delete dbClean.settings.gistToken;delete dbClean.settings.apiKey;}
-    // Regex scrub: remove any ghp_ tokens lurking in any field
+    // Build clean JSON
     let jsonStr=JSON.stringify(dbClean,null,2);
-    jsonStr=jsonStr.replace(/ghp_[A-Za-z0-9]{36,}/g,'[REMOVED]');
-    const encoded=btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g,(_,p)=>String.fromCharCode('0x'+p)));
+    // Verify we have real data
+    const preCheck=JSON.parse(jsonStr);
+    if(!preCheck.clients||!preCheck.clients.length){
+      alert('ERROR: DB is empty at encode time. Clients: '+(preCheck.clients||[]).length);
+      return false;
+    }
+    // Simple, reliable UTF-8 base64 encoding
+    const encoded=btoa(unescape(encodeURIComponent(jsonStr)));
     const payload={message:'TraceClean sync '+new Date().toISOString(),content:encoded};
     if(sha)payload.sha=sha;
     const put=await fetch(GH_API,{method:'PUT',headers,body:JSON.stringify(payload)});
