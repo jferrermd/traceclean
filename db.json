@@ -23,6 +23,20 @@
       "pin": "SONIA2026",
       "notes": "",
       "createdAt": "2026-05-12"
+    },
+    {
+      "id": "mp2xqru2tci",
+      "name": "MORDISCO INTERNATIONAL LLC",
+      "address": "11030 International Dr. Orlando. Fl. 32821",
+      "contact": "Juan Gonzalez",
+      "email": "mordiscointernational@gmail.com",
+      "phone": "3058338661",
+      "maintContact": "RICARDO",
+      "maintPhone": "3058338661",
+      "plan": "Plan A",
+      "pin": "MORDISCO#01",
+      "notes": "",
+      "createdAt": "2026-05-12"
     }
   ],
   "hoods": [
@@ -431,6 +445,6 @@
   "settings": {
     "ownerPass": "ICSP_DIRECTOR2026",
     "taxRate": 0,
-    "lastSync": "1:46:24 PM"
+    "lastSync": "1:54:35 PM"
   }
 }
