@@ -2844,6 +2844,8 @@ async function pushToGitHub(manual){
       return false;
     }
     // Simple, reliable UTF-8 base64 encoding
+    // Debug: show first 150 chars of what we're about to push
+    alert('PUSHING ('+jsonStr.length+' chars):\n'+jsonStr.slice(0,150));
     const encoded=btoa(unescape(encodeURIComponent(jsonStr)));
     const payload={message:'TraceClean sync '+new Date().toISOString(),content:encoded};
     if(sha)payload.sha=sha;
