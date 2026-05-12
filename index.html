@@ -946,7 +946,19 @@ function vPH(){
       <span class="b bbl">NFPA 96 §11.4</span>
     </div>
     ${svs.length?`<div class="cnotes"><div class="cnl">Latest service record</div><div class="cnt">${svs[0].publicNotes}</div><div style="margin-top:6px;font-size:11px;color:var(--g600)">By <b>${svs[0].tech}</b>${svs[0].signature?' · Digitally signed ✓':''}</div></div>`:''}
-    ${svs.length&&(svs[0].photoBefore||svs[0].photoAfter)?`<div class="cnotes" style="padding:12px"><div class="cnl">Before & After — ${fmt(svs[0].date)}</div><div class="pgrid">${svs[0].photoBefore?`<div class="pc"><span class="plbl">BEFORE</span><img src="${svs[0].photoBefore}"></div>`:''} ${svs[0].photoAfter?`<div class="pc"><span class="plbl">AFTER</span><img src="${svs[0].photoAfter}"></div>`:''}</div></div>`:''}
+    ${(()=>{
+      const sv0=svs[0];if(!sv0)return'';
+      const bef=[...(sv0.photosBefore||[]),...(sv0.photoBefore&&!(sv0.photosBefore||[]).length?[sv0.photoBefore]:[])];
+      const aft=[...(sv0.photosAfter||[]),...(sv0.photoAfter&&!(sv0.photosAfter||[]).length?[sv0.photoAfter]:[])];
+      if(!bef.length&&!aft.length)return'';
+      return`<div class="cnotes" style="padding:12px">
+        <div class="cnl">Before & After — ${fmt(sv0.date)} (${bef.length} before · ${aft.length} after)</div>
+        <div class="pgrid">
+          ${bef.map(p=>`<div class="pc"><span class="plbl">BEFORE</span><img src="${p}" style="width:100%;height:120px;object-fit:cover;display:block;border-radius:4px;cursor:pointer" onclick="this.requestFullscreen&&this.requestFullscreen()"></div>`).join('')}
+          ${aft.map(p=>`<div class="pc"><span class="plbl">AFTER</span><img src="${p}" style="width:100%;height:120px;object-fit:cover;display:block;border-radius:4px;cursor:pointer" onclick="this.requestFullscreen&&this.requestFullscreen()"></div>`).join('')}
+        </div>
+      </div>`;
+    })()}
     ${st.cert?`<div class="cband" style="margin-bottom:0">📄 NFPA 96 §11.6.1 Certificate: <b>${st.cert}</b></div>`:''}
     ${svs.length&&svs[0].jsr?`
     <div style="margin-top:8px">
