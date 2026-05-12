@@ -115,6 +115,15 @@
       "id": "mp1c5l51ptq",
       "clientId": "mp1c5l51uq6",
       "createdAt": "2026-03-12"
+    },
+    {
+      "id": "mp27g0f8axa",
+      "clientId": "mp21rkj13oy",
+      "num": "1",
+      "name": "1",
+      "nfpa": "MODERATE",
+      "freq": "Quarterly",
+      "createdAt": "2026-05-12"
     }
   ],
   "services": [
@@ -318,6 +327,7 @@
   ],
   "settings": {
     "ownerPass": "ICSP_DIRECTOR2026",
-    "taxRate": 0
+    "taxRate": 0,
+    "lastSync": "1:43:12 AM"
   }
 }
