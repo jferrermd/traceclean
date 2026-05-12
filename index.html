@@ -245,7 +245,7 @@ let S = {v:'home', lv:null, cid:null, hid:null, tab:0, estId:null};
 
 // ── STORAGE ────────────────────────────────────────────────────────────
 function ldb(){try{const d=localStorage.getItem('tc_db3');if(d)DB=JSON.parse(d);}catch(e){}if(!DB.clients.length)seed();}
-function sdb(){try{localStorage.setItem('tc_db3',JSON.stringify(DB));}catch(e){}}
+function sdb(push=true){try{localStorage.setItem('tc_db3',JSON.stringify(DB));}catch(e){}if(push&&DB.settings?.ghToken)pushToGitHub(false);}
 
 // ── UTILS ──────────────────────────────────────────────────────────────
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
@@ -2809,9 +2809,7 @@ async function pushToGitHub(manual){
       sdb(false); // save locally without re-triggering push
       const el=document.getElementById('sync-status');
       if(el)el.textContent='✅ Synced at '+DB.settings.lastSync;
-      if(manual)alert('✅ Data pushed to GitHub successfully!
-
-Inspectors can now see live data from any device.');
+      if(manual)alert('✅ Data pushed to GitHub successfully! Inspectors can now see live data from any device.');
       return true;
     }else{
       const err=await r.json();
@@ -2841,13 +2839,6 @@ async function pullFromGitHub(manual){
     if(manual)alert('❌ Pull error: '+e.message);
     return false;
   }
-}
-
-// Auto-pull on load if token exists, auto-push on every save
-const _origSdb = sdb;
-function sdb(push=true){
-  try{localStorage.setItem('tc_db3',JSON.stringify(DB));}catch(e){}
-  if(push && DB.settings?.ghToken) pushToGitHub(false);
 }
 
 // ── HASH ROUTING ─────────────────────────────────────────────────────────
