@@ -2159,7 +2159,7 @@ function vOData(){
         <label class="lb">GitHub Personal Access Token</label>
         <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" 
           value="${DB.settings?.ghToken||''}" 
-          oninput="DB.settings=DB.settings||{};DB.settings.ghToken=this.value;sdb()"
+          oninput="DB.settings=DB.settings||{};DB.settings.ghToken=this.value.trim();sdb(false)"
           style="font-family:monospace;font-size:12px">
         <div class="mu" style="margin-top:4px">Stored locally only — never shared. Needs <b>repo</b> scope.</div>
       </div>
