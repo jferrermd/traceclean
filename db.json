@@ -367,7 +367,36 @@
       "updated": "2026-05-11"
     }
   ],
-  "estimates": [],
+  "estimates": [
+    {
+      "id": "mp2x92ff6ki",
+      "clientName": "MORDISCO INTERNATIONAL LLC",
+      "clientAddr": "11030 International Dr. Orlando. Fl. 32821",
+      "clientEmail": "mordiscointernational@gmail.com",
+      "clientPhone": "3058338661",
+      "date": "2026-05-12",
+      "validDays": 30,
+      "type": "commercial",
+      "subtype": "restaurant",
+      "items": [
+        {
+          "label": "Kitchen Hood Cleaning: 11–20 linear feet",
+          "qty": 1,
+          "unit": "service",
+          "price": 850,
+          "total": 850
+        }
+      ],
+      "subtotal": 850,
+      "discount": 0,
+      "taxRate": 0,
+      "taxAmt": 0,
+      "total": 850,
+      "terms": "Payment due within 15 days. NFPA 96 certificate issued upon service completion.",
+      "status": "Approved",
+      "createdAt": "2026-05-12"
+    }
+  ],
   "estTemplates": [
     {
       "id": "mp1c5l51j6k",
@@ -399,6 +428,6 @@
   "settings": {
     "ownerPass": "ICSP_DIRECTOR2026",
     "taxRate": 0,
-    "lastSync": "11:30:31 AM"
+    "lastSync": "12:18:10 PM"
   }
 }
