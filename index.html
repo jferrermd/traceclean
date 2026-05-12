@@ -2167,6 +2167,7 @@ function vOData(){
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
       <button class="pri sm" onclick="pushToGitHub(true)">☁️ Push data to GitHub now</button>
       <button class="sm" onclick="pullFromGitHub(true)">⬇ Pull from GitHub</button>
+      <button class="sm" onclick="testGHToken()">🔑 Test token</button>
       <span id="sync-status" style="font-size:11px;color:var(--g600)">
         ${DB.settings?.lastSync?'Last sync: '+DB.settings.lastSync:'Not synced yet'}
       </span>
@@ -2787,6 +2788,21 @@ const GH_REPO = 'jferrermd/traceclean';
 const GH_FILE = 'db.json';
 const GH_RAW  = `https://raw.githubusercontent.com/${GH_REPO}/main/${GH_FILE}`;
 const GH_API  = `https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`;
+
+
+async function testGHToken(){
+  const token=(DB.settings?.ghToken||'').trim();
+  if(!token){alert('No token found. Paste your token first.');return;}
+  alert('Token stored: '+token.slice(0,6)+'...'+token.slice(-4)+' ('+token.length+' chars)');
+  try{
+    const r=await fetch('https://api.github.com/user',{
+      headers:{'Authorization':'token '+token}
+    });
+    const d=await r.json();
+    if(r.ok) alert('✅ Token valid! GitHub user: '+d.login);
+    else alert('❌ Token error: '+d.message);
+  }catch(e){alert('Connection error: '+e.message);}
+}
 
 async function pushToGitHub(manual){
   const token = DB.settings?.ghToken;
