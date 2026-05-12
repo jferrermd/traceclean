@@ -245,7 +245,7 @@ let S = {v:'home', lv:null, cid:null, hid:null, tab:0, estId:null};
 
 // ── STORAGE ────────────────────────────────────────────────────────────
 function ldb(){try{const d=localStorage.getItem('tc_db3');if(d)DB=JSON.parse(d);}catch(e){}if(!DB.clients.length)seed();}
-function sdb(push=true){try{localStorage.setItem('tc_db3',JSON.stringify(DB));}catch(e){}if(push&&DB.settings?.ghToken)pushToGitHub(false);}
+function sdb(push=true){try{localStorage.setItem('tc_db3',JSON.stringify(DB));}catch(e){}if(push&&localStorage.getItem('tc_ghtoken'))pushToGitHub(false);}
 
 // ── UTILS ──────────────────────────────────────────────────────────────
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
@@ -2158,8 +2158,8 @@ function vOData(){
       <div class="fg">
         <label class="lb">GitHub Personal Access Token</label>
         <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" 
-          value="${DB.settings?.ghToken||''}" 
-          oninput="DB.settings=DB.settings||{};DB.settings.ghToken=this.value.trim();sdb(false)"
+          value="${localStorage.getItem('tc_ghtoken')||''}" 
+          oninput="localStorage.setItem('tc_ghtoken',this.value.trim())"
           style="font-family:monospace;font-size:12px">
         <div class="mu" style="margin-top:4px">Stored locally only — never shared. Needs <b>repo</b> scope.</div>
       </div>
@@ -2791,7 +2791,7 @@ const GH_API  = `https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`;
 
 
 async function testGHToken(){
-  const token=(DB.settings?.ghToken||'').trim();
+  const token=(localStorage.getItem('tc_ghtoken')||'').trim();
   if(!token){alert('No token found. Paste your token first.');return;}
   alert('Token stored: '+token.slice(0,6)+'...'+token.slice(-4)+' ('+token.length+' chars)');
   try{
@@ -2805,7 +2805,7 @@ async function testGHToken(){
 }
 
 async function pushToGitHub(manual){
-  const token=(DB.settings?.ghToken||'').trim();
+  const token=(localStorage.getItem('tc_ghtoken')||'').trim();
   if(!token){if(manual)alert('Paste your GitHub token first.');return false;}
   try{
     const headers={'Authorization':'token '+token,'Content-Type':'application/json'};
@@ -2840,7 +2840,7 @@ async function pullFromGitHub(manual){
     const data = await r.json();
     if(!data||typeof data!=='object'){ if(manual)alert('Invalid data from GitHub.'); return false; }
     // Preserve local token
-    const localToken = DB.settings?.ghToken;
+    const localToken = localStorage.getItem('tc_ghtoken');
     Object.assign(DB, data);
     if(localToken && DB.settings) DB.settings.ghToken = localToken;
     localStorage.setItem('tc_db3', JSON.stringify(DB));
@@ -2859,7 +2859,7 @@ ldb();
 handleHash();
 render();
 // Pull from GitHub in background after initial render
-if(DB.settings?.ghToken){
+if(localStorage.getItem('tc_ghtoken')){
   pullFromGitHub(false).then(updated=>{ if(updated){ handleHash(); render(); } });
 }
 </script>
