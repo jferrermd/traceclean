@@ -317,6 +317,13 @@
       "code": "ICSP01",
       "active": true,
       "createdAt": "2026-05-12"
+    },
+    {
+      "id": "mp2sesrtzr6",
+      "name": "ABDIAS",
+      "code": "ICSP02",
+      "active": true,
+      "createdAt": "2026-05-12"
     }
   ],
   "payroll": [],
@@ -399,6 +406,6 @@
   "settings": {
     "ownerPass": "ICSP_DIRECTOR2026",
     "taxRate": 0,
-    "lastSync": "1:43:30 AM"
+    "lastSync": "11:29:54 AM"
   }
 }
