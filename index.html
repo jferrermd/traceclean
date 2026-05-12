@@ -2880,9 +2880,8 @@ if(DB.settings?.ghToken){delete DB.settings.ghToken;localStorage.setItem('tc_db3
 handleHash();
 render();
 // Pull from GitHub in background after initial render
-if(localStorage.getItem('tc_ghtoken')){
-  pullFromGitHub(false).then(updated=>{ if(updated){ handleHash(); render(); } });
-}
+// Always pull from GitHub on load — public read, no token needed
+pullFromGitHub(false).then(updated=>{ if(updated){ handleHash(); render(); } });
 </script>
 </body>
 </html>
