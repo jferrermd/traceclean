@@ -951,11 +951,20 @@ function vPH(){
       const bef=[...(sv0.photosBefore||[]),...(sv0.photoBefore&&!(sv0.photosBefore||[]).length?[sv0.photoBefore]:[])];
       const aft=[...(sv0.photosAfter||[]),...(sv0.photoAfter&&!(sv0.photosAfter||[]).length?[sv0.photoAfter]:[])];
       if(!bef.length&&!aft.length)return'';
+      const maxLen=Math.max(bef.length,aft.length);
       return`<div class="cnotes" style="padding:12px">
-        <div class="cnl">Before & After — ${fmt(sv0.date)} (${bef.length} before · ${aft.length} after)</div>
-        <div class="pgrid">
-          ${bef.map(p=>`<div class="pc"><span class="plbl">BEFORE</span><img src="${p}" style="width:100%;height:120px;object-fit:cover;display:block;border-radius:4px;cursor:pointer" onclick="this.requestFullscreen&&this.requestFullscreen()"></div>`).join('')}
-          ${aft.map(p=>`<div class="pc"><span class="plbl">AFTER</span><img src="${p}" style="width:100%;height:120px;object-fit:cover;display:block;border-radius:4px;cursor:pointer" onclick="this.requestFullscreen&&this.requestFullscreen()"></div>`).join('')}
+        <div class="cnl">Before & After — ${fmt(sv0.date)}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
+          <div>
+            <div style="text-align:center;font-size:10px;font-weight:800;letter-spacing:1px;color:#E74C3C;margin-bottom:4px;text-transform:uppercase">◀ Before</div>
+            ${bef.map(p=>`<div style="margin-bottom:4px"><img src="${p}" style="width:100%;height:130px;object-fit:cover;display:block;border-radius:4px;border:2px solid #E74C3C;cursor:pointer" onclick="this.requestFullscreen&&this.requestFullscreen()"></div>`).join('')}
+            ${bef.length===0?`<div style="height:130px;background:#f5f5f5;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:11px">No photo</div>`:''}
+          </div>
+          <div>
+            <div style="text-align:center;font-size:10px;font-weight:800;letter-spacing:1px;color:#27AE60;margin-bottom:4px;text-transform:uppercase">After ▶</div>
+            ${aft.map(p=>`<div style="margin-bottom:4px"><img src="${p}" style="width:100%;height:130px;object-fit:cover;display:block;border-radius:4px;border:2px solid #27AE60;cursor:pointer" onclick="this.requestFullscreen&&this.requestFullscreen()"></div>`).join('')}
+            ${aft.length===0?`<div style="height:130px;background:#f5f5f5;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:11px">No photo</div>`:''}
+          </div>
         </div>
       </div>`;
     })()}
