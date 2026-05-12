@@ -2845,12 +2845,12 @@ async function pullFromGitHub(manual){
 function handleHash(){try{const h=window.location.hash;if(h.startsWith('#verify/')){const id=h.replace('#verify/','');const hd=DB.hoods.find(x=>x.id===id);if(hd){S.hid=hd.id;S.v='pub_hood';}else{S.hid=id;S.v='pub_not_found';}}}catch(e){}}
 window.addEventListener('hashchange',()=>{try{handleHash();render();}catch(e){}});
 ldb();
-(async()=>{
-  if(DB.settings?.ghToken){
-    await pullFromGitHub(false);
-  }
-  handleHash();render();
-})();
+handleHash();
+render();
+// Pull from GitHub in background after initial render
+if(DB.settings?.ghToken){
+  pullFromGitHub(false).then(updated=>{ if(updated){ handleHash(); render(); } });
+}
 </script>
 </body>
 </html>
