@@ -433,7 +433,7 @@ function vAD(){
   <div class="card"><div class="ct">Clients</div>`;
   if(!DB.clients.length)html+=`<div class="empty">No clients yet</div>`;
   DB.clients.forEach(c=>{const hds=DB.hoods.filter(h=>h.clientId===c.id);const ov2=hds.filter(h=>hst(h.id).cl==='al').length;
-    html+=`<div class="row"><div class="row cl" style="flex:1;border:none;padding:0" onclick="sv('admin_client',{cid:'${c.id}'})"><div style="font-size:13px;font-weight:700;color:var(--navy)">${c.name}</div><div class="mu">${c.address}</div></div>
+    html+=`<div class="row"><div class="row cl" style="flex:1;border:none;padding:0" onclick="sv('admin_client',{cid:'${c.id}',from:'owner_dash'})"><div style="font-size:13px;font-weight:700;color:var(--navy)">${c.name}</div><div class="mu">${c.address}</div></div>
     <div class="flex">${ov2?`<span class="b bal">${ov2} overdue</span>`:'<span class="b bok">OK</span>'}<span class="b bgr">${hds.length}</span>›</div></div>`;
   });
   html+=`</div>`;document.getElementById('main').innerHTML=html;
@@ -442,7 +442,7 @@ function vAD(){
 function vAC(){
   const c=DB.clients.find(x=>x.id===S.cid);if(!c){sv('admin_dash');return;}
   const hds=DB.hoods.filter(h=>h.clientId===c.id);
-  let html=`<button class="bk" onclick="sv('admin_dash')">← Dashboard</button>
+  let html=`<button class="bk" onclick="sv(S.from||'admin_dash')">← ${S.from==='owner_dash'?'Director Panel':'Dashboard'}</button>
   ${c.blocked?`<div style="background:#A32D2D;color:white;padding:10px 14px;border-radius:8px;margin-bottom:10px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:space-between">🔒 QR ACCESS BLOCKED — Client cannot view records${S.lv==='owner'?`<button onclick="toggleBlock('${c.id}')" style="background:rgba(255,255,255,.2);color:white;border:1px solid rgba(255,255,255,.3);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer">Unblock</button>`:''}` :`${S.lv==='owner'?`<div class="flex" style="justify-content:flex-end;margin-bottom:8px"><button onclick="toggleBlock('${c.id}')" style="color:var(--red);border-color:#F5B7B1;font-size:11px" class="xs">🔒 Block QR access</button></div>`:''}`}
   <div class="card" style="margin-bottom:10px"><div class="fxb" style="margin-bottom:10px"><div style="font-size:14px;font-weight:800;color:var(--navy)">${c.name}</div><span class="b bbl">${c.plan}</span></div>
   <div class="g2"><div><div class="mu">Contact</div><div style="font-size:12px;font-weight:600;margin-top:2px">${c.contact}</div></div><div><div class="mu">Email</div><div style="font-size:12px;font-weight:600;margin-top:2px">${c.email}</div></div>
@@ -818,7 +818,7 @@ function savSvc(hid,num){
 }
 
 function vNC(){document.getElementById('main').innerHTML=`
-  <button class="bk" onclick="sv('admin_dash')">← Dashboard</button>
+  <button class="bk" onclick="sv(S.from||'admin_dash')">← ${S.from==='owner_dash'?'Director Panel':'Dashboard'}</button>
   <div class="card"><div class="ct">🏪 New Client</div>
   <div class="g2" style="margin-bottom:10px">
     <div class="fg" style="grid-column:1/-1"><label class="lb">Business name *</label><input id="nn" placeholder="Property / business name"></div>
@@ -1025,7 +1025,7 @@ function vOD(){
     <div class="ac" onclick="sv('owner_batch_print')" style="border-color:#8E44AD"><span class="ac-i">🖨️</span><div class="ac-t" style="color:#8E44AD">Print QR</div><div class="ac-s">Batch sticker print</div></div>
   </div>
   <div class="card"><div class="ct">Quick access — Clients</div>
-  ${DB.clients.map(c=>{const hds=DB.hoods.filter(h=>h.clientId===c.id);const ov=hds.filter(h=>hst(h.id).cl==='al').length;return`<div class="row"><div onclick="sv('admin_client',{cid:'${c.id}'})" style="flex:1;cursor:pointer"><div style="font-size:13px;font-weight:700">${c.name}</div><div class="mu">${hds.length} hoods · ${c.plan}</div></div><div class="flex">${ov?`<span class="b bal">${ov} overdue</span>`:'<span class="b bok">OK</span>'}<button class="xs dan" onclick="event.stopPropagation();delClient('${c.id}')">🗑</button>›</div></div>`;}).join('')}
+  ${DB.clients.map(c=>{const hds=DB.hoods.filter(h=>h.clientId===c.id);const ov=hds.filter(h=>hst(h.id).cl==='al').length;return`<div class="row"><div onclick="sv('admin_client',{cid:'${c.id}',from:'owner_dash'})" style="flex:1;cursor:pointer"><div style="font-size:13px;font-weight:700">${c.name}</div><div class="mu">${hds.length} hoods · ${c.plan}</div></div><div class="flex">${ov?`<span class="b bal">${ov} overdue</span>`:'<span class="b bok">OK</span>'}<button class="xs dan" onclick="event.stopPropagation();delClient('${c.id}')">🗑</button>›</div></div>`;}).join('')}
   </div>`;
 }
 
