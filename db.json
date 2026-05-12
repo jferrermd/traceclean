@@ -310,6 +310,13 @@
       "code": "TECH002",
       "active": true,
       "createdAt": "2026-05-11"
+    },
+    {
+      "id": "mp2sduwam2p",
+      "name": "JOSE FERRER",
+      "code": "ICSP01",
+      "active": true,
+      "createdAt": "2026-05-12"
     }
   ],
   "payroll": [],
