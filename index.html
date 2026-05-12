@@ -879,20 +879,24 @@ function vCH(){
 // ── PUBLIC HOOD VIEW ────────────────────────────────────────────────────
 
 function vPNF(){
+  const searchId=S.hid||'unknown';
+  const hoodsInDB=(DB.hoods||[]).length;
+  const clientsInDB=(DB.clients||[]).length;
   document.getElementById('main').innerHTML=`
-  <div style="text-align:center;padding:40px 20px;max-width:360px;margin:0 auto">
+  <div style="text-align:center;padding:30px 20px;max-width:360px;margin:0 auto">
     <div style="font-size:48px;margin-bottom:16px">🔍</div>
     <div style="font-size:18px;font-weight:800;color:var(--navy);margin-bottom:8px">Hood Not Found</div>
-    <div style="font-size:13px;color:var(--g600);margin-bottom:20px;line-height:1.5">
-      This QR code is valid but the equipment record is not available on this device.<br><br>
-      <b>For inspectors:</b> Contact ICSP to verify this installation.<br>
-      <b style="color:var(--red)">Note:</b> Records are device-specific until cloud sync is enabled.
+    <div style="background:#FEF9E7;border:1px solid #F9E79F;border-radius:8px;padding:10px;margin-bottom:12px;font-size:11px;text-align:left;color:#7D6608">
+      <b>Debug info:</b><br>
+      Looking for ID: <span style="font-family:monospace;word-break:break-all">${searchId.slice(0,20)}...</span><br>
+      Clients in DB: ${clientsInDB}<br>
+      Hoods in DB: ${hoodsInDB}<br>
+      <button class="xs" style="margin-top:6px" onclick="pullFromGitHub(true)">🔄 Pull from GitHub now</button>
     </div>
     <div style="background:#EBF5FB;border-radius:8px;padding:14px;margin-bottom:20px;font-size:12px;color:#1F618D">
       <b>Intelligent Clean Steel Pro</b><br>
       IKECA MFS-S000024 · NFPA 96 Certified<br>
-      info@intelligentclean.org<br>
-      (407) 676-2086
+      info@intelligentclean.org · (407) 676-2086
     </div>
     <button class="pri sm" onclick="window.location.hash=''">← Back to Home</button>
   </div>`;
