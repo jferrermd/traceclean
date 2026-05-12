@@ -2792,15 +2792,20 @@ const GH_API  = `https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`;
 
 
 function cleanAndPush(){
-  // Remove any token from DB object before pushing
+  const cl=(DB.clients||[]).length;
+  const hd=(DB.hoods||[]).length;
+  const sv=(DB.services||[]).length;
+  if(!cl&&!hd){
+    alert('No data to push! The DB is empty.\nMake sure you have clients and hoods created before pushing.');
+    return;
+  }
+  if(!confirm('Push to GitHub?\n\nClients: '+cl+'\nHoods: '+hd+'\nServices: '+sv+'\n\nThis will make data visible to all devices.'))return;
   if(DB.settings){
     delete DB.settings.ghToken;
     delete DB.settings.gistToken;
     delete DB.settings.apiKey;
   }
-  // Re-save clean DB to localStorage
   localStorage.setItem('tc_db3', JSON.stringify(DB));
-  // Now push
   pushToGitHub(true);
 }
 
@@ -2858,12 +2863,16 @@ async function pullFromGitHub(manual){
     if(!r.ok){ if(manual)alert('Could not reach GitHub. Check connection.'); return false; }
     const data = await r.json();
     if(!data||typeof data!=='object'){ if(manual)alert('Invalid data from GitHub.'); return false; }
-    // Preserve local token
+    // Only overwrite if pulled data has real content
+    if(!data.clients||!data.clients.length){
+      if(manual)alert('GitHub db.json has no clients yet. Push your data first.');
+      return false;
+    }
     const localToken = localStorage.getItem('tc_ghtoken');
     Object.assign(DB, data);
     if(localToken && DB.settings) DB.settings.ghToken = localToken;
     localStorage.setItem('tc_db3', JSON.stringify(DB));
-    if(manual){ alert('✅ Data pulled from GitHub successfully!'); render(); }
+    if(manual){ alert('✅ Pulled: '+data.clients.length+' clients, '+(data.hoods||[]).length+' hoods.'); render(); }
     return true;
   }catch(e){
     if(manual)alert('❌ Pull error: '+e.message);
