@@ -298,13 +298,6 @@
   ],
   "techs": [
     {
-      "id": "mp1c5l51bnu",
-      "name": "Carlos M.",
-      "code": "TECH001",
-      "active": true,
-      "createdAt": "2026-05-11"
-    },
-    {
       "id": "mp1c5l51m8c",
       "name": "Pedro R.",
       "code": "TECH002",
@@ -406,6 +399,6 @@
   "settings": {
     "ownerPass": "ICSP_DIRECTOR2026",
     "taxRate": 0,
-    "lastSync": "11:29:54 AM"
+    "lastSync": "11:30:31 AM"
   }
 }
