@@ -393,8 +393,9 @@
       "taxAmt": 0,
       "total": 850,
       "terms": "Payment due within 15 days. NFPA 96 certificate issued upon service completion.",
-      "status": "Approved",
-      "createdAt": "2026-05-12"
+      "status": "Sent",
+      "createdAt": "2026-05-12",
+      "approvalCode": "GXWTRU"
     }
   ],
   "estTemplates": [
@@ -428,6 +429,6 @@
   "settings": {
     "ownerPass": "ICSP_DIRECTOR2026",
     "taxRate": 0,
-    "lastSync": "12:18:10 PM"
+    "lastSync": "1:45:56 PM"
   }
 }
