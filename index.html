@@ -2805,37 +2805,32 @@ async function testGHToken(){
 }
 
 async function pushToGitHub(manual){
-  const token = DB.settings?.ghToken;
-  if(!token){ if(manual)alert('Enter your GitHub token in Data → Cloud Sync first.'); return false; }
+  const token=(DB.settings?.ghToken||'').trim();
+  if(!token){if(manual)alert('Paste your GitHub token first.');return false;}
   try{
-    // Get current SHA
-    const headers = {'Authorization':'token '+token,'Content-Type':'application/json'};
-    let sha = '';
-    try{
-      const meta = await fetch(GH_API,{headers});
-      if(meta.ok){ const m=await meta.json(); sha=m.sha||''; }
-    }catch(e){}
-    // Push
-    const body = {message:'TraceClean DB update '+new Date().toISOString(),
-      content:btoa(unescape(encodeURIComponent(JSON.stringify(DB,null,2))))};
-    if(sha)body.sha=sha;
-    const r = await fetch(GH_API,{method:'PUT',headers,body:JSON.stringify(body)});
-    if(r.ok){
+    const headers={'Authorization':'token '+token,'Content-Type':'application/json'};
+    let sha='';
+    const getMeta=await fetch(GH_API,{headers:{'Authorization':'token '+token}});
+    if(getMeta.ok){const m=await getMeta.json();sha=m.sha||'';}
+    else if(getMeta.status!==404){if(manual)alert('Error reading file: '+getMeta.status);return false;}
+    const jsonStr=JSON.stringify(DB,null,2);
+    const encoded=btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g,(_,p)=>String.fromCharCode('0x'+p)));
+    const payload={message:'TraceClean sync '+new Date().toISOString(),content:encoded};
+    if(sha)payload.sha=sha;
+    const put=await fetch(GH_API,{method:'PUT',headers,body:JSON.stringify(payload)});
+    if(put.ok){
       DB.settings.lastSync=new Date().toLocaleTimeString();
-      sdb(false); // save locally without re-triggering push
+      localStorage.setItem('tc_db3',JSON.stringify(DB));
       const el=document.getElementById('sync-status');
       if(el)el.textContent='✅ Synced at '+DB.settings.lastSync;
-      if(manual)alert('✅ Data pushed to GitHub successfully! Inspectors can now see live data from any device.');
+      if(manual)alert('✅ Push successful! db.json updated on GitHub.');
       return true;
     }else{
-      const err=await r.json();
-      if(manual)alert('❌ GitHub error: '+(err.message||r.status));
+      const err=await put.json().catch(()=>({message:put.status}));
+      if(manual)alert('❌ Push failed ('+put.status+'): '+err.message);
       return false;
     }
-  }catch(e){
-    if(manual)alert('❌ Connection error: '+e.message);
-    return false;
-  }
+  }catch(e){if(manual)alert('❌ Error: '+e.message);return false;}
 }
 
 async function pullFromGitHub(manual){
