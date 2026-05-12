@@ -624,10 +624,13 @@ function vAS(){
   <div class="card">
     <div class="ct">📋 Log Service — Hood #${h.num} (${h.name})</div>
     <div class="g2" style="margin-bottom:10px">
-      <div class="fg"><label class="lb">Service date</label><input type="date" id="sd" value="${today()}"></div>
+      <div class="fg"><label class="lb">Service date</label><input type="date" id="sd" value="${today()}" oninput="(()=>{const d=new Date(this.value);const fd=freqDays('${h.freq}');d.setDate(d.getDate()+fd);document.getElementById('sn').value=d.toISOString().slice(0,10);})()"></div>
       <div class="fg"><label class="lb">Technician</label><input id="st2" placeholder="Full name"></div>
       <div class="fg"><label class="lb">Condition found</label><select id="sc"><option>Clean — no findings</option><option>Light accumulation</option><option>Moderate accumulation</option><option>Severe accumulation</option></select></div>
-      <div class="fg"><label class="lb">Next service date</label><input type="date" id="sn"></div>
+      <div class="fg"><label class="lb">Next service date <span style="font-weight:400;color:var(--green)">(auto from frequency)</span></label>
+        <input type="date" id="sn" value="${(()=>{const d=new Date(today());const fd=freqDays(h.freq);d.setDate(d.getDate()+fd);return d.toISOString().slice(0,10);})()}">
+        <div class="mu" style="margin-top:3px">Based on: <b>${h.freq||'Quarterly'}</b> — adjust if needed</div>
+      </div>
     </div>
     <div class="sep"></div>
     <div class="fg"><label class="lb">Public note <span style="font-weight:400;text-transform:none;color:var(--green)">(inspectors & clients)</span></label><textarea id="sp" rows="2" placeholder="System condition, certificate statement..."></textarea></div>
