@@ -974,6 +974,10 @@ function vPH(){
       <button onclick="toggleJSR(this)" data-jsrnum="${svs[0].jsr.num}" style="width:100%;padding:10px;background:var(--g50);border:1px solid var(--g200);border-radius:6px;font-size:12px;font-weight:700;color:var(--navy);cursor:pointer">
         📋 View Job Service Report (JSR #${svs[0].jsr.num}) ▾
       </button>
+      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">
+        <button class="xs" onclick="printJSR('${svs[0].jsr.num}')" style="background:#2980B9;color:#fff">🖨️ Print / Download</button>
+        <button class="xs" onclick="emailJSR('${svs[0].jsr.num}','${h.id}')" style="background:#1a73e8;color:#fff">📧 Send by Email</button>
+      </div>
       <div id="jsr-panel" style="display:none;margin-top:6px;border:1px solid var(--g200);border-radius:6px;overflow:hidden">
         ${buildJSRView(svs[0].jsr, svs[0].date, svs[0].tech, DB.clients.find(x=>x.id===h.clientId), h)}
       </div>
@@ -2418,6 +2422,66 @@ function sendStripePaymentLink(estId){
 }
 */
 
+
+
+function printJSR(jsrNum){
+  const svc=DB.services.find(s=>s.jsr&&s.jsr.num===jsrNum);
+  if(!svc)return;
+  const h=DB.hoods.find(x=>x.id===svc.hoodId);
+  const c=DB.clients.find(x=>x.id===(h?h.clientId:''));
+  const jsrHtml=buildJSRView(svc.jsr,svc.date,svc.tech,c,h);
+  const win=window.open('','_blank','width=800,height=600');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8">
+  <title>JSR #${jsrNum}</title>
+  <style>
+    body{font-family:Arial,sans-serif;font-size:12px;padding:20px;max-width:800px;margin:0 auto}
+    @media print{@page{margin:15mm}}
+    .no-print{display:none}
+    table{width:100%;border-collapse:collapse}
+    td,th{padding:4px 8px;border:1px solid #ddd;font-size:11px}
+    button{padding:8px 20px;background:#0D2B4E;color:#fff;border:none;border-radius:4px;cursor:pointer;margin-bottom:16px}
+  </style></head><body>
+  <button class="no-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+  ${jsrHtml}
+  <script>setTimeout(()=>window.print(),500)<\/script>
+  </body></html>`);
+  win.document.close();
+}
+
+function emailJSR(jsrNum,hid){
+  const svc=DB.services.find(s=>s.jsr&&s.jsr.num===jsrNum);
+  if(!svc)return;
+  const h=DB.hoods.find(x=>x.id===hid);
+  const c=DB.clients.find(x=>x.id===(h?h.clientId:''));
+  const jsr=svc.jsr;
+  const subj=`Job Service Report — JSR #${jsrNum} — ${c?c.name:''} Hood #${h?h.num:''}`;
+  const body=`Dear ${c?c.contact:''},
+
+Please find attached the Job Service Report for the recent kitchen exhaust cleaning service performed at your facility.
+
+JSR #: ${jsrNum}
+Date: ${svc.date}
+Location: ${c?c.name:''} — Hood #${h?h.num:''} (${h?h.name:''})
+Technician: ${svc.tech||'ICSP Crew'}
+
+SERVICE SUMMARY:
+• Filters cleaned: ${jsr.filters?'Yes':'No'}
+• Fans cleaned: ${jsr.fans?'Yes':'No'}
+• Grease removed from ducts: ${jsr.ducts?'Yes':'No'}
+• Hood sticker updated: ${jsr.sticker?'Yes':'No'}
+
+${jsr.problems?'ISSUES FOUND:\n'+jsr.problems+'\n\n':''}NFPA 96 Compliance Certificate and before/after photos are available by scanning the QR code on the hood sticker or at:
+https://verify.intelligentclean.org/#verify/${hid}
+
+For questions or to schedule your next service, contact us at:
+info@intelligentclean.org | (407) 676-2086
+
+Thank you for choosing Intelligent Clean Steel Pro.
+IKECA Certified MFS-S000024 | NFPA 96 Compliant`;
+
+  const to=c?(c.email||''):'';
+  window.open(`mailto:${to}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`,'_blank');
+}
 
 function toggleJSR(btn){
   const p=document.getElementById('jsr-panel');
