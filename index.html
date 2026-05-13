@@ -2430,20 +2430,42 @@ function printJSR(jsrNum){
   const h=DB.hoods.find(x=>x.id===svc.hoodId);
   const c=DB.clients.find(x=>x.id===(h?h.clientId:''));
   const jsrHtml=buildJSRView(svc.jsr,svc.date,svc.tech,c,h);
-  const win=window.open('','_blank','width=800,height=600');
+  // Build photos section
+  const bef=[...(svc.photosBefore||[]),...(svc.photoBefore&&!(svc.photosBefore||[]).length?[svc.photoBefore]:[])];
+  const aft=[...(svc.photosAfter||[]),...(svc.photoAfter&&!(svc.photosAfter||[]).length?[svc.photoAfter]:[])];
+  const photoHtml=(bef.length||aft.length)?`
+    <div style="margin-top:20px;page-break-inside:avoid">
+      <div style="font-size:13px;font-weight:800;color:#0D2B4E;border-bottom:2px solid #0D2B4E;padding-bottom:4px;margin-bottom:12px">BEFORE & AFTER PHOTOS</div>
+      <table style="width:100%;border-collapse:collapse">
+        <tr>
+          <td style="width:50%;padding:6px;vertical-align:top;border:none">
+            <div style="text-align:center;font-weight:700;color:#E74C3C;margin-bottom:6px;font-size:11px">◀ BEFORE (${bef.length} photos)</div>
+            ${bef.map(p=>`<img src="${p}" style="width:100%;margin-bottom:6px;border-radius:4px;border:1px solid #ddd;display:block">`).join('')}
+          </td>
+          <td style="width:50%;padding:6px;vertical-align:top;border:none;border-left:2px solid #eee">
+            <div style="text-align:center;font-weight:700;color:#27AE60;margin-bottom:6px;font-size:11px">AFTER ▶ (${aft.length} photos)</div>
+            ${aft.map(p=>`<img src="${p}" style="width:100%;margin-bottom:6px;border-radius:4px;border:1px solid #ddd;display:block">`).join('')}
+          </td>
+        </tr>
+      </table>
+    </div>`:'<div style="margin-top:12px;color:#888;font-size:11px">No photos attached to this service.</div>';
+  const win=window.open('','_blank','width=900,height=700');
   win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8">
-  <title>JSR #${jsrNum}</title>
+  <title>JSR #${jsrNum} — ${c?c.name:''}</title>
   <style>
-    body{font-family:Arial,sans-serif;font-size:12px;padding:20px;max-width:800px;margin:0 auto}
-    @media print{@page{margin:15mm}}
-    .no-print{display:none}
+    *{box-sizing:border-box}
+    body{font-family:Arial,sans-serif;font-size:12px;padding:20px;max-width:850px;margin:0 auto;color:#222}
+    @media print{@page{margin:12mm} .no-print{display:none!important}}
     table{width:100%;border-collapse:collapse}
     td,th{padding:4px 8px;border:1px solid #ddd;font-size:11px}
-    button{padding:8px 20px;background:#0D2B4E;color:#fff;border:none;border-radius:4px;cursor:pointer;margin-bottom:16px}
+    .print-btn{padding:10px 24px;background:#0D2B4E;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:13px;margin-bottom:16px}
   </style></head><body>
-  <button class="no-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+  <button class="print-btn no-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
   ${jsrHtml}
-  <script>setTimeout(()=>window.print(),500)<\/script>
+  ${photoHtml}
+  <div style="margin-top:20px;padding-top:10px;border-top:1px solid #eee;font-size:10px;color:#888;text-align:center">
+    Intelligent Clean Steel Pro · IKECA MFS-S000024 · NFPA 96 Certified · info@intelligentclean.org · (407) 676-2086
+  </div>
   </body></html>`);
   win.document.close();
 }
