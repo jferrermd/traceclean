@@ -374,7 +374,7 @@ function render(){
     owner_payroll:vOPayroll, owner_employees:vOEmployees, owner_new_employee:vONewEmployee, owner_new_pay:vONewPay,
     owner_expenses:vOExp, owner_new_exp:vONewExp,
     owner_inventory:vOInv, owner_new_inv:vONewInv,
-    owner_estimates:vOEst, owner_new_est:vONewEst, owner_est_preview:vOEstPreview, owner_batch_print:vOBatchPrint, owner_calendar:vOCalendar,
+    owner_estimates:vOEst, owner_new_est:vONewEst, owner_est_preview:vOEstPreview, owner_batch_print:vOBatchPrint, owner_calendar:vOCalendar, owner_clients:vOClients, owner_edit_client:vOEditClient, owner_schedule:vOSchedule, owner_invoice:vOInvoice,
     owner_reports:vORep,
     owner_data:vOData,
     owner_billing:vOBilling,
@@ -433,7 +433,7 @@ function vAD(){
   <div class="card"><div class="ct">Clients</div>`;
   if(!DB.clients.length)html+=`<div class="empty">No clients yet</div>`;
   DB.clients.forEach(c=>{const hds=DB.hoods.filter(h=>h.clientId===c.id);const ov2=hds.filter(h=>hst(h.id).cl==='al').length;
-    html+=`<div class="row"><div class="row cl" style="flex:1;border:none;padding:0" onclick="sv('admin_client',{cid:'${c.id}',from:'owner_dash'})"><div style="font-size:13px;font-weight:700;color:var(--navy)">${c.name}</div><div class="mu">${c.address}</div></div>
+    html+=`<div class="row"><div class="row cl" style="flex:1;border:none;padding:0" onclick="sv('admin_client',{cid:'${c.id}',from:'owner_clients'})"><div style="font-size:13px;font-weight:700;color:var(--navy)">${c.name}</div><div class="mu">${c.address}</div></div>
     <div class="flex">${ov2?`<span class="b bal">${ov2} overdue</span>`:'<span class="b bok">OK</span>'}<span class="b bgr">${hds.length}</span>›</div></div>`;
   });
   html+=`</div>`;document.getElementById('main').innerHTML=html;
@@ -442,7 +442,7 @@ function vAD(){
 function vAC(){
   const c=DB.clients.find(x=>x.id===S.cid);if(!c){sv('admin_dash');return;}
   const hds=DB.hoods.filter(h=>h.clientId===c.id);
-  let html=`<button class="bk" onclick="sv(S.from||'admin_dash')">← ${S.from==='owner_dash'?'Director Panel':'Dashboard'}</button>
+  let html=`<button class="bk" onclick="sv(S.from||'admin_dash')">← ${S.from==='owner_dash'?'Director Panel':S.from==='owner_clients'?'Clients':'Dashboard'}</button>
   ${c.blocked?`<div style="background:#A32D2D;color:white;padding:10px 14px;border-radius:8px;margin-bottom:10px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:space-between">🔒 QR ACCESS BLOCKED — Client cannot view records${S.lv==='owner'?`<button onclick="toggleBlock('${c.id}')" style="background:rgba(255,255,255,.2);color:white;border:1px solid rgba(255,255,255,.3);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer">Unblock</button>`:''}` :`${S.lv==='owner'?`<div class="flex" style="justify-content:flex-end;margin-bottom:8px"><button onclick="toggleBlock('${c.id}')" style="color:var(--red);border-color:#F5B7B1;font-size:11px" class="xs">🔒 Block QR access</button></div>`:''}`}
   <div class="card" style="margin-bottom:10px"><div class="fxb" style="margin-bottom:10px"><div style="font-size:14px;font-weight:800;color:var(--navy)">${c.name}</div><span class="b bbl">${c.plan}</span></div>
   <div class="g2"><div><div class="mu">Contact</div><div style="font-size:12px;font-weight:600;margin-top:2px">${c.contact}</div></div><div><div class="mu">Email</div><div style="font-size:12px;font-weight:600;margin-top:2px">${c.email}</div></div>
@@ -818,7 +818,7 @@ function savSvc(hid,num){
 }
 
 function vNC(){document.getElementById('main').innerHTML=`
-  <button class="bk" onclick="sv(S.from||'admin_dash')">← ${S.from==='owner_dash'?'Director Panel':'Dashboard'}</button>
+  <button class="bk" onclick="sv(S.from||'admin_dash')">← ${S.from==='owner_dash'?'Director Panel':S.from==='owner_clients'?'Clients':'Dashboard'}</button>
   <div class="card"><div class="ct">🏪 New Client</div>
   <div class="g2" style="margin-bottom:10px">
     <div class="fg" style="grid-column:1/-1"><label class="lb">Business name *</label><input id="nn" placeholder="Property / business name"></div>
@@ -1019,6 +1019,7 @@ function vOD(){
     <div class="stat" style="${lowInv?'background:#FDEDEC':''}"><div class="sl">Low inventory</div><div class="sn" style="color:${lowInv?'var(--red)':'var(--green)'}">${lowInv}</div></div>
   </div>
   <div class="ag4">
+    <div class="ac" onclick="sv('owner_clients')" style="border-color:#2471A3"><span class="ac-i">🏢</span><div class="ac-t" style="color:#2471A3">Clients</div><div class="ac-s">Create · Edit · Invoice</div></div>
     <div class="ac" onclick="sv('owner_team')"><span class="ac-i">👥</span><div class="ac-t">Team</div><div class="ac-s">Access codes</div></div>
     <div class="ac" onclick="sv('owner_estimates')"><span class="ac-i">📋</span><div class="ac-t">Estimates</div><div class="ac-s">Quotes & templates</div></div>
     <div class="ac" onclick="sv('owner_accounting')"><span class="ac-i">💰</span><div class="ac-t">Accounting</div><div class="ac-s">Expenses & payroll</div></div>
@@ -1029,7 +1030,7 @@ function vOD(){
     <div class="ac" onclick="sv('owner_batch_print')" style="border-color:#8E44AD"><span class="ac-i">🖨️</span><div class="ac-t" style="color:#8E44AD">Print QR</div><div class="ac-s">Batch sticker print</div></div>
   </div>
   <div class="card"><div class="ct">Quick access — Clients</div>
-  ${DB.clients.map(c=>{const hds=DB.hoods.filter(h=>h.clientId===c.id);const ov=hds.filter(h=>hst(h.id).cl==='al').length;return`<div class="row"><div onclick="sv('admin_client',{cid:'${c.id}',from:'owner_dash'})" style="flex:1;cursor:pointer"><div style="font-size:13px;font-weight:700">${c.name}</div><div class="mu">${hds.length} hoods · ${c.plan}</div></div><div class="flex">${ov?`<span class="b bal">${ov} overdue</span>`:'<span class="b bok">OK</span>'}<button class="xs dan" onclick="event.stopPropagation();delClient('${c.id}')">🗑</button>›</div></div>`;}).join('')}
+  ${DB.clients.map(c=>{const hds=DB.hoods.filter(h=>h.clientId===c.id);const ov=hds.filter(h=>hst(h.id).cl==='al').length;return`<div class="row"><div onclick="sv('admin_client',{cid:'${c.id}',from:'owner_clients'})" style="flex:1;cursor:pointer"><div style="font-size:13px;font-weight:700">${c.name}</div><div class="mu">${hds.length} hoods · ${c.plan}</div></div><div class="flex">${ov?`<span class="b bal">${ov} overdue</span>`:'<span class="b bok">OK</span>'}<button class="xs dan" onclick="event.stopPropagation();delClient('${c.id}')">🗑</button>›</div></div>`;}).join('')}
   </div>`;
 }
 
@@ -2032,6 +2033,351 @@ function contactClient(cid,hoodNum,nextDate){
   const msg=`Hello ${contact}, this is Intelligent Clean Steel Pro. We are scheduling your NFPA 96 hood cleaning service for Hood #${hoodNum} at ${c.name}. Your next service is due ${fmt(nextDate)}. Please confirm a convenient date. (407) 676-2086`;
   if(phone)window.open(`sms:${phone}?body=${encodeURIComponent(msg)}`,'_blank');
   else alert('No phone number on file for this client.');
+}
+
+
+// ── OWNER: CLIENT MANAGEMENT ─────────────────────────────────────────────
+function vOClients(){
+  const clients=DB.clients;
+  document.getElementById('main').innerHTML=`
+  <button class="bk" onclick="sv('owner_dash')">← Director Panel</button>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin:12px 0 10px">
+    <div style="font-size:17px;font-weight:800;color:var(--navy)">🏢 Client Management</div>
+    <button class="pri sm" onclick="sv('owner_new_client')">➕ New Client</button>
+  </div>
+  ${!clients.length?'<div class="empty">No clients yet. Create your first client.</div>':''}
+  ${clients.map(c=>{
+    const hoods=DB.hoods.filter(h=>h.clientId===c.id);
+    const svcs=DB.services.filter(s=>hoods.some(h=>h.id===s.hoodId));
+    const lastSvc=svcs.sort((a,b)=>b.date.localeCompare(a.date))[0];
+    return`<div class="card" style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:8px">
+        <div>
+          <div style="font-size:14px;font-weight:800;color:var(--navy)">${c.name}</div>
+          <div class="mu">${c.address||''} ${c.plan?'· Plan: '+c.plan:''}</div>
+          <div class="mu">Contact: ${c.contact||'—'} · ${c.phone||'—'}</div>
+          ${c.maintContact?`<div class="mu">Maintenance: ${c.maintContact} · ${c.maintPhone||'—'}</div>`:''}
+        </div>
+        <div style="font-size:11px;text-align:right;color:var(--g600)">
+          <div>${hoods.length} hood${hoods.length!==1?'s':''}</div>
+          <div>${svcs.length} service${svcs.length!==1?'s':''}</div>
+          ${lastSvc?`<div>Last: ${fmt(lastSvc.date)}</div>`:''}
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="xs" onclick="sv('admin_client',{cid:'${c.id}',from:'owner_clients'})">🔍 View</button>
+        <button class="xs" onclick="sv('owner_edit_client',{cid:'${c.id}'})">✏️ Edit</button>
+        <button class="xs" onclick="sv('owner_schedule',{cid:'${c.id}'})">📅 Schedule</button>
+        <button class="xs" style="background:#E74C3C;color:#fff" onclick="sv('owner_new_est',{prefillCid:'${c.id}'})">🧾 New Estimate</button>
+        <button class="xs" style="background:#117864;color:#fff" onclick="sv('owner_invoice',{cid:'${c.id}'})">💳 Invoice</button>
+        ${c.maintPhone||c.phone?`<button class="xs" style="background:#25d366;color:#fff" onclick="contactClient('${c.id}','all','')">📱 Contact</button>`:''}
+      </div>
+    </div>`;
+  }).join('')}`;
+}
+
+function vOEditClient(){
+  const c=DB.clients.find(x=>x.id===S.cid);
+  if(!c){sv('owner_clients');return;}
+  document.getElementById('main').innerHTML=`
+  <button class="bk" onclick="sv('owner_clients')">← Clients</button>
+  <div style="font-size:16px;font-weight:800;color:var(--navy);margin:12px 0 10px">✏️ Edit Client — ${c.name}</div>
+  <div class="card">
+    <div class="fg"><label class="lb">Company name</label><input id="ec-name" value="${c.name||''}"></div>
+    <div class="fg"><label class="lb">Address</label><input id="ec-addr" value="${c.address||''}"></div>
+    <div class="fg"><label class="lb">Main contact</label><input id="ec-contact" value="${c.contact||''}"></div>
+    <div class="fg"><label class="lb">Email</label><input id="ec-email" type="email" value="${c.email||''}"></div>
+    <div class="fg"><label class="lb">Phone</label><input id="ec-phone" value="${c.phone||''}"></div>
+    <div class="fg"><label class="lb">Maintenance contact</label><input id="ec-mcontact" value="${c.maintContact||''}" placeholder="Chief of Maintenance name"></div>
+    <div class="fg"><label class="lb">Maintenance phone</label><input id="ec-mphone" value="${c.maintPhone||''}" placeholder="Direct SMS number"></div>
+    <div class="fg"><label class="lb">Service plan</label>
+      <select id="ec-plan" style="width:100%;padding:8px;border:1px solid var(--g200);border-radius:6px;font-size:13px">
+        ${['Monthly','Quarterly','Semi-Annual','Annual','Custom'].map(p=>`<option ${c.plan===p?'selected':''}>${p}</option>`).join('')}
+      </select>
+    </div>
+    <div class="fg"><label class="lb">Client PIN</label><input id="ec-pin" value="${c.pin||''}" placeholder="4-8 digit PIN for client access"></div>
+    <div class="fg"><label class="lb">Notes</label><textarea id="ec-notes" rows="3">${c.notes||''}</textarea></div>
+    <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">
+      <button class="pri" onclick="saveEditClient('${c.id}')">💾 Save Changes</button>
+      <button class="sm" onclick="sv('owner_clients')">Cancel</button>
+      <button class="sm" style="background:#E74C3C;color:#fff;margin-left:auto" onclick="deleteClient('${c.id}')">🗑 Delete Client</button>
+    </div>
+  </div>`;
+}
+
+function saveEditClient(cid){
+  const c=DB.clients.find(x=>x.id===cid);if(!c)return;
+  const name=document.getElementById('ec-name').value.trim();
+  if(!name){alert('Company name required.');return;}
+  c.name=name;
+  c.address=document.getElementById('ec-addr').value;
+  c.contact=document.getElementById('ec-contact').value;
+  c.email=document.getElementById('ec-email').value;
+  c.phone=document.getElementById('ec-phone').value;
+  c.maintContact=document.getElementById('ec-mcontact').value;
+  c.maintPhone=document.getElementById('ec-mphone').value;
+  c.plan=document.getElementById('ec-plan').value;
+  c.pin=document.getElementById('ec-pin').value;
+  c.notes=document.getElementById('ec-notes').value;
+  sdb();
+  alert('✅ Client updated successfully.');
+  sv('owner_clients');
+}
+
+function deleteClient(cid){
+  const c=DB.clients.find(x=>x.id===cid);if(!c)return;
+  const hoodCount=DB.hoods.filter(h=>h.clientId===cid).length;
+  if(!confirm(`Delete ${c.name}?\nThis will also delete ${hoodCount} hood(s) and all their service records. This cannot be undone.`))return;
+  DB.hoods.filter(h=>h.clientId===cid).forEach(h=>{
+    DB.services=DB.services.filter(s=>s.hoodId!==h.id);
+  });
+  DB.hoods=DB.hoods.filter(h=>h.clientId!==cid);
+  DB.clients=DB.clients.filter(x=>x.id!==cid);
+  sdb();sv('owner_clients');
+}
+
+function vOSchedule(){
+  const c=DB.clients.find(x=>x.id===S.cid);if(!c){sv('owner_clients');return;}
+  const hoods=DB.hoods.filter(h=>h.clientId===S.cid);
+  document.getElementById('main').innerHTML=`
+  <button class="bk" onclick="sv('owner_clients')">← Clients</button>
+  <div style="font-size:16px;font-weight:800;color:var(--navy);margin:12px 0 4px">📅 Schedule Service — ${c.name}</div>
+  <div class="mu" style="margin-bottom:12px">Set next service date per hood. SMS reminder will be sent to maintenance contact.</div>
+  ${hoods.map(h=>{
+    const svcs=DB.services.filter(s=>s.hoodId===h.id).sort((a,b)=>b.date.localeCompare(a.date));
+    const lastSvc=svcs[0];
+    const nextDate=lastSvc?.nextDate||addDays(lastSvc?.date||today(),freqDays(h.freq));
+    return`<div class="card" style="margin-bottom:8px">
+      <div style="font-weight:700;margin-bottom:6px">Hood #${h.num} — ${h.name} <span class="mu">(${h.freq||'Quarterly'})</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div><div class="mu">Last service</div><div style="font-weight:700">${lastSvc?fmt(lastSvc.date):'Never'}</div></div>
+        <div><div class="mu">Next due</div>
+          <input type="date" id="ns-${h.id}" value="${nextDate}" style="width:100%;padding:6px;border:1px solid var(--g200);border-radius:6px;font-size:12px">
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="xs suc" onclick="confirmSchedule('${h.id}','${c.id}')">💾 Save date</button>
+        ${c.maintPhone||c.phone?`<button class="xs" style="background:#25d366;color:#fff" onclick="sendScheduleSMS('${h.id}','${c.id}')">📱 Notify client</button>`:''}
+      </div>
+    </div>`;
+  }).join('')}`;
+}
+
+function confirmSchedule(hid,cid){
+  const newDate=document.getElementById('ns-'+hid)?.value;
+  if(!newDate)return;
+  const svcs=DB.services.filter(s=>s.hoodId===hid).sort((a,b)=>b.date.localeCompare(a.date));
+  if(svcs[0]){svcs[0].nextDate=newDate;}
+  else{
+    const h=DB.hoods.find(x=>x.id===hid);
+    if(h)h.nextServiceDate=newDate;
+  }
+  sdb();
+  const el=document.getElementById('ns-'+hid);
+  if(el)el.style.borderColor='var(--green)';
+  alert('✅ Next service date saved: '+fmt(newDate));
+}
+
+function sendScheduleSMS(hid,cid){
+  const h=DB.hoods.find(x=>x.id===hid);
+  const c=DB.clients.find(x=>x.id===cid);
+  if(!h||!c)return;
+  const newDate=document.getElementById('ns-'+hid)?.value||'';
+  const phone=(c.maintPhone||c.phone||'').replace(/\D/g,'');
+  const contact=c.maintContact||c.contact||'';
+  const msg=`Hello ${contact}, this is Intelligent Clean Steel Pro. We are scheduling your next NFPA 96 hood cleaning for Hood #${h.num} (${h.name}) at ${c.name}. Proposed date: ${fmt(newDate)}. Please confirm or suggest an alternative. (407) 676-2086`;
+  if(phone)window.open(`sms:${phone}?body=${encodeURIComponent(msg)}`,'_blank');
+  else alert('No phone number on file for this client.');
+}
+
+function vOInvoice(){
+  const c=DB.clients.find(x=>x.id===S.cid);
+  if(!c){sv('owner_clients');return;}
+  const hoods=DB.hoods.filter(h=>h.clientId===S.cid);
+  const invNum='INV-'+Date.now().toString().slice(-6);
+  document.getElementById('main').innerHTML=`
+  <button class="bk" onclick="sv('owner_clients')">← Clients</button>
+  <div style="font-size:16px;font-weight:800;color:var(--navy);margin:12px 0 10px">💳 New Invoice — ${c.name}</div>
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div class="fg"><label class="lb">Invoice #</label><input id="inv-num" value="${invNum}" style="font-weight:700;font-family:monospace"></div>
+      <div class="fg"><label class="lb">Date</label><input type="date" id="inv-date" value="${today()}"></div>
+      <div class="fg"><label class="lb">Due date</label><input type="date" id="inv-due" value="${addDays(today(),30)}"></div>
+      <div class="fg"><label class="lb">PO Number (optional)</label><input id="inv-po" placeholder="Client PO #"></div>
+    </div>
+    <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px">Line Items</div>
+    <div id="inv-items">
+      ${hoods.map((h,i)=>`
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px;margin-bottom:6px;align-items:center" id="inv-row-${i}">
+        <input value="Hood #${h.num} — ${h.name} cleaning (NFPA 96)" id="inv-desc-${i}" style="font-size:12px">
+        <input type="number" value="1" min="1" id="inv-qty-${i}" style="font-size:12px;text-align:center">
+        <input type="number" value="0" min="0" step="0.01" id="inv-price-${i}" placeholder="Price" style="font-size:12px;text-align:right">
+      </div>`).join('')}
+    </div>
+    <button class="xs" style="margin-bottom:10px" onclick="addInvRow()">➕ Add line item</button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div class="fg"><label class="lb">Discount %</label><input type="number" id="inv-disc" value="0" min="0" max="100" oninput="calcInvTotal()"></div>
+      <div class="fg"><label class="lb">Tax %</label><input type="number" id="inv-tax" value="0" min="0" step="0.1" oninput="calcInvTotal()"></div>
+    </div>
+    <div style="background:#F4F6F9;border-radius:8px;padding:10px;margin-bottom:10px;font-size:13px" id="inv-summary">
+      <div style="display:flex;justify-content:space-between"><span>Subtotal:</span><span id="inv-sub">$0.00</span></div>
+      <div style="display:flex;justify-content:space-between;color:var(--green)"><span>Discount:</span><span id="inv-disc-amt">-$0.00</span></div>
+      <div style="display:flex;justify-content:space-between"><span>Tax:</span><span id="inv-tax-amt">$0.00</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:800;font-size:15px;margin-top:6px;padding-top:6px;border-top:1px solid var(--g200)"><span>TOTAL:</span><span id="inv-total" style="color:var(--navy)">$0.00</span></div>
+    </div>
+    <div class="fg"><label class="lb">Payment terms / Notes</label><textarea id="inv-notes" rows="2" placeholder="Net 30 · Payment by check or ACH..."></textarea></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+      <button class="pri" onclick="printInvoice('${c.id}')">🖨️ Print / PDF</button>
+      <button class="sm" style="background:#1a73e8;color:#fff" onclick="emailInvoice('${c.id}')">📧 Email Invoice</button>
+      <button class="sm" onclick="sv('owner_clients')">Cancel</button>
+    </div>
+  </div>`;
+  calcInvTotal();
+}
+
+let invRowCount=0;
+function addInvRow(){
+  invRowCount++;
+  const i='extra'+invRowCount;
+  const div=document.createElement('div');
+  div.style.cssText='display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px;margin-bottom:6px;align-items:center';
+  div.id='inv-row-'+i;
+  div.innerHTML=`<input placeholder="Description" id="inv-desc-${i}" style="font-size:12px"><input type="number" value="1" min="1" id="inv-qty-${i}" style="font-size:12px;text-align:center" oninput="calcInvTotal()"><input type="number" value="0" min="0" step="0.01" id="inv-price-${i}" placeholder="Price" style="font-size:12px;text-align:right" oninput="calcInvTotal()">`;
+  document.getElementById('inv-items').appendChild(div);
+  calcInvTotal();
+}
+
+function getInvItems(){
+  const items=[];
+  document.querySelectorAll('[id^="inv-desc-"]').forEach(el=>{
+    const i=el.id.replace('inv-desc-','');
+    const qty=Number(document.getElementById('inv-qty-'+i)?.value||1);
+    const price=Number(document.getElementById('inv-price-'+i)?.value||0);
+    const desc=el.value;
+    if(desc||price)items.push({desc,qty,price,total:qty*price});
+  });
+  return items;
+}
+
+function calcInvTotal(){
+  const items=getInvItems();
+  const sub=items.reduce((a,i)=>a+i.total,0);
+  const disc=Number(document.getElementById('inv-disc')?.value||0);
+  const tax=Number(document.getElementById('inv-tax')?.value||0);
+  const discAmt=sub*(disc/100);
+  const afterDisc=sub-discAmt;
+  const taxAmt=afterDisc*(tax/100);
+  const total=afterDisc+taxAmt;
+  const s=v=>document.getElementById(v);
+  if(s('inv-sub'))s('inv-sub').textContent=money(sub);
+  if(s('inv-disc-amt'))s('inv-disc-amt').textContent='-'+money(discAmt);
+  if(s('inv-tax-amt'))s('inv-tax-amt').textContent=money(taxAmt);
+  if(s('inv-total'))s('inv-total').textContent=money(total);
+  return{sub,discAmt,taxAmt,total,disc,tax};
+}
+
+function buildInvoiceHTML(c){
+  const items=getInvItems();
+  const t=calcInvTotal();
+  const num=document.getElementById('inv-num')?.value||'';
+  const date=document.getElementById('inv-date')?.value||today();
+  const due=document.getElementById('inv-due')?.value||'';
+  const po=document.getElementById('inv-po')?.value||'';
+  const notes=document.getElementById('inv-notes')?.value||'';
+  return`
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+    <div>
+      <div style="font-size:22px;font-weight:900;color:#0D2B4E">INVOICE</div>
+      <div style="font-size:11px;color:#666">Invoice #: <b>${num}</b></div>
+      ${po?`<div style="font-size:11px;color:#666">PO #: ${po}</div>`:''}
+      <div style="font-size:11px;color:#666">Date: ${fmt(date)}</div>
+      <div style="font-size:11px;color:#E74C3C;font-weight:700">Due: ${fmt(due)}</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-weight:800;color:#0D2B4E">Intelligent Clean Steel Pro</div>
+      <div style="font-size:11px;color:#666">IKECA MFS-S000024 · NFPA 96 Certified</div>
+      <div style="font-size:11px;color:#666">info@intelligentclean.org</div>
+      <div style="font-size:11px;color:#666">(407) 676-2086</div>
+    </div>
+  </div>
+  <div style="background:#F4F6F9;padding:10px;border-radius:6px;margin-bottom:16px;font-size:12px">
+    <div style="font-weight:700;color:#0D2B4E;margin-bottom:4px">BILL TO:</div>
+    <div style="font-weight:700">${c.name}</div>
+    <div>${c.address||''}</div>
+    <div>${c.contact||''} · ${c.email||''} · ${c.phone||''}</div>
+  </div>
+  <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:16px">
+    <thead><tr style="background:#0D2B4E;color:#fff">
+      <th style="padding:6px 8px;text-align:left">Description</th>
+      <th style="padding:6px 8px;text-align:center;width:50px">Qty</th>
+      <th style="padding:6px 8px;text-align:right;width:80px">Unit</th>
+      <th style="padding:6px 8px;text-align:right;width:90px">Total</th>
+    </tr></thead>
+    <tbody>
+      ${items.map((it,i)=>`<tr style="border-bottom:1px solid #eee;background:${i%2?'#fafafa':'#fff'}">
+        <td style="padding:6px 8px">${it.desc}</td>
+        <td style="padding:6px 8px;text-align:center">${it.qty}</td>
+        <td style="padding:6px 8px;text-align:right">${money(it.price)}</td>
+        <td style="padding:6px 8px;text-align:right;font-weight:700">${money(it.total)}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table>
+  <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+    <table style="width:220px;font-size:12px">
+      <tr><td>Subtotal</td><td style="text-align:right">${money(t.sub)}</td></tr>
+      ${t.discAmt>0?`<tr style="color:#27AE60"><td>Discount (${t.disc}%)</td><td style="text-align:right">-${money(t.discAmt)}</td></tr>`:''}
+      ${t.taxAmt>0?`<tr><td>Tax (${t.tax}%)</td><td style="text-align:right">${money(t.taxAmt)}</td></tr>`:''}
+      <tr style="font-weight:800;font-size:14px;border-top:2px solid #0D2B4E">
+        <td style="padding-top:6px">TOTAL DUE</td>
+        <td style="text-align:right;color:#0D2B4E;padding-top:6px">${money(t.total)}</td>
+      </tr>
+    </table>
+  </div>
+  ${notes?`<div style="background:#FDFEFE;border:1px solid #eee;border-radius:4px;padding:10px;font-size:11px;color:#555"><b>Terms & Notes:</b><br>${notes}</div>`:''}`;
+}
+
+function printInvoice(cid){
+  const c=DB.clients.find(x=>x.id===cid);if(!c)return;
+  const html=buildInvoiceHTML(c);
+  const win=window.open('','_blank','width=900,height=700');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Invoice — ${c.name}</title>
+  <style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;padding:24px;max-width:800px;margin:0 auto}@media print{@page{margin:15mm}.no-print{display:none!important}}</style>
+  </head><body>
+  <button class="no-print" onclick="window.print()" style="padding:8px 20px;background:#0D2B4E;color:#fff;border:none;border-radius:4px;cursor:pointer;margin-bottom:16px">🖨️ Print / Save as PDF</button>
+  ${html}</body></html>`);
+  win.document.close();
+}
+
+function emailInvoice(cid){
+  const c=DB.clients.find(x=>x.id===cid);if(!c)return;
+  const t=calcInvTotal();
+  const num=document.getElementById('inv-num')?.value||'INV';
+  const due=document.getElementById('inv-due')?.value||'';
+  const items=getInvItems();
+  const subj=`Invoice ${num} — ${c.name} — ${money(t.total)}`;
+  const body=`Dear ${c.contact||c.name},
+
+Please find below your invoice from Intelligent Clean Steel Pro.
+
+Invoice #: ${num}
+Date: ${today()}
+Due date: ${fmt(due)}
+
+SERVICES:
+${items.map(it=>`  • ${it.desc}: ${it.qty} × ${money(it.price)} = ${money(it.total)}`).join('\n')}
+
+${t.discAmt>0?'Discount: -'+money(t.discAmt)+'\n':''}${t.taxAmt>0?'Tax: '+money(t.taxAmt)+'\n':''}TOTAL DUE: ${money(t.total)}
+
+Payment terms: ${document.getElementById('inv-notes')?.value||'Net 30'}
+
+For questions contact us at:
+info@intelligentclean.org | (407) 676-2086
+
+Thank you for your business.
+Intelligent Clean Steel Pro
+IKECA MFS-S000024 | NFPA 96 Certified`;
+
+  window.open(`mailto:${c.email||''}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`,'_blank');
 }
 
 // ── OWNER: BATCH QR PRINT ───────────────────────────────────────────────
