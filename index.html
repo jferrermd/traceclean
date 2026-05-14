@@ -316,7 +316,7 @@ function delClient(cid){
   DB.clients=DB.clients.filter(x=>x.id!==cid);
   DB.hoods=DB.hoods.filter(h=>h.clientId!==cid);
   DB.services=DB.services.filter(s=>!hids.includes(s.hoodId));
-  sdb();sv('admin_dash');
+  sdb();sv(S.from||'admin_dash');
 }
 function delHood(hid){
   const h=DB.hoods.find(x=>x.id===hid);if(!h)return;
@@ -2043,7 +2043,7 @@ function vOClients(){
   <button class="bk" onclick="sv('owner_dash')">← Director Panel</button>
   <div style="display:flex;justify-content:space-between;align-items:center;margin:12px 0 10px">
     <div style="font-size:17px;font-weight:800;color:var(--navy)">🏢 Client Management</div>
-    <button class="pri sm" onclick="sv('owner_new_client')">➕ New Client</button>
+    <button class="pri sm" onclick="sv('admin_new_client',{from:'owner_clients'})">➕ New Client</button>
   </div>
   ${!clients.length?'<div class="empty">No clients yet. Create your first client.</div>':''}
   ${clients.map(c=>{
