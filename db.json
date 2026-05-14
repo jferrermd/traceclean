@@ -161,6 +161,15 @@
       "nfpa": "HEAVY",
       "freq": "Quarterly",
       "createdAt": "2026-05-12"
+    },
+    {
+      "id": "mp5nwrs5uq2",
+      "clientId": "mp5nvxyzyqp",
+      "num": "GRILL",
+      "name": "1",
+      "nfpa": "EXTRA HEAVY",
+      "freq": "Monthly",
+      "createdAt": "2026-05-14"
     }
   ],
   "services": [
@@ -536,6 +545,6 @@
   "settings": {
     "ownerPass": "ICSP_DIRECTOR2026",
     "taxRate": 0,
-    "lastSync": "1:59:43 PM"
+    "lastSync": "11:47:10 AM"
   }
 }
