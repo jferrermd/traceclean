@@ -170,6 +170,15 @@
       "nfpa": "EXTRA HEAVY",
       "freq": "Monthly",
       "createdAt": "2026-05-14"
+    },
+    {
+      "id": "mp5nyk81ezt",
+      "clientId": "mp5nvxyzyqp",
+      "num": "MAIN KITCHEN",
+      "name": "1",
+      "nfpa": "HEAVY",
+      "freq": "Quarterly",
+      "createdAt": "2026-05-14"
     }
   ],
   "services": [
@@ -545,6 +554,6 @@
   "settings": {
     "ownerPass": "ICSP_DIRECTOR2026",
     "taxRate": 0,
-    "lastSync": "11:47:10 AM"
+    "lastSync": "11:47:47 AM"
   }
 }
