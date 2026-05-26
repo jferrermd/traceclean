@@ -51,6 +51,20 @@
       "pin": "DIVINA11",
       "notes": "",
       "createdAt": "2026-05-14"
+    },
+    {
+      "id": "mpn3lenlfsw",
+      "name": "AKASAKA KITCHEN AND LOUNGE",
+      "address": "7786 W Sand Lake Rd Orlando, FL 32819",
+      "contact": "EDGARD MATEO",
+      "email": "lele@akasakakitchen.com",
+      "phone": "(407) 473-5046",
+      "maintContact": "EDGARD MATEO",
+      "maintPhone": "(407) 473-5046",
+      "plan": "Plan A",
+      "pin": "AKASAKA01",
+      "notes": "",
+      "createdAt": "2026-05-26"
     }
   ],
   "hoods": [
