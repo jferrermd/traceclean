@@ -216,6 +216,15 @@
       "nfpa": "HEAVY",
       "freq": "Quarterly",
       "createdAt": "2026-05-26"
+    },
+    {
+      "id": "mpyo2f4l7kr",
+      "clientId": "mpyo1xj6bad",
+      "num": "01",
+      "name": "1",
+      "nfpa": "MODERATE",
+      "freq": "Semi-annual",
+      "createdAt": "2026-06-03"
     }
   ],
   "services": [
@@ -732,6 +741,6 @@
   "settings": {
     "ownerPass": "ICSP_DIRECTOR2026",
     "taxRate": 0,
-    "lastSync": "4:39:28 PM"
+    "lastSync": "6:57:10 PM"
   }
 }
