@@ -65,6 +65,20 @@
       "pin": "AKASAKA01",
       "notes": "",
       "createdAt": "2026-05-26"
+    },
+    {
+      "id": "mpyo1xj6bad",
+      "name": "TIKKA SHA",
+      "address": "1500 Alafaya Trail Oviedo, FL 32765",
+      "contact": "JENY SHAH",
+      "email": "tksoviedo@gmail.com",
+      "phone": "4077563187",
+      "maintContact": "Jeny Shah",
+      "maintPhone": "4077563187",
+      "plan": "Plan B",
+      "pin": "Tikka-01",
+      "notes": "",
+      "createdAt": "2026-06-03"
     }
   ],
   "hoods": [
