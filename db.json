@@ -79,6 +79,20 @@
       "pin": "Tikka-01",
       "notes": "",
       "createdAt": "2026-06-03"
+    },
+    {
+      "id": "mpyo6xrc66x",
+      "name": "The Station Bar & Group",
+      "address": "109 S Palmetto Ave. Sanford, Fl. 32771",
+      "contact": "Alex Sirica",
+      "email": "asirica45@live.com",
+      "phone": "3212764814",
+      "maintContact": "",
+      "maintPhone": "3212764814",
+      "plan": "Plan A",
+      "pin": "Alex-01",
+      "notes": "",
+      "createdAt": "2026-06-03"
     }
   ],
   "hoods": [
@@ -741,6 +755,6 @@
   "settings": {
     "ownerPass": "ICSP_DIRECTOR2026",
     "taxRate": 0,
-    "lastSync": "6:57:10 PM"
+    "lastSync": "6:57:32 PM"
   }
 }
