@@ -248,6 +248,15 @@
       "nfpa": "HEAVY",
       "freq": "Quarterly",
       "createdAt": "2026-06-03"
+    },
+    {
+      "id": "mpyo89oswgl",
+      "clientId": "mpyo6xrc66x",
+      "num": "02",
+      "name": "The Station Bar",
+      "nfpa": "HEAVY",
+      "freq": "Quarterly",
+      "createdAt": "2026-06-03"
     }
   ],
   "services": [
@@ -764,6 +773,6 @@
   "settings": {
     "ownerPass": "ICSP_DIRECTOR2026",
     "taxRate": 0,
-    "lastSync": "7:01:05 PM"
+    "lastSync": "7:01:40 PM"
   }
 }
