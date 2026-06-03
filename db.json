@@ -280,6 +280,15 @@
       "nfpa": "HEAVY",
       "freq": "Quarterly",
       "createdAt": "2026-06-03"
+    },
+    {
+      "id": "mpyofhnhc36",
+      "clientId": "mpyof0iuh3r",
+      "num": "01",
+      "name": "Mika Cafe",
+      "nfpa": "MODERATE",
+      "freq": "Semi-annual",
+      "createdAt": "2026-06-03"
     }
   ],
   "services": [
@@ -796,6 +805,6 @@
   "settings": {
     "ownerPass": "ICSP_DIRECTOR2026",
     "taxRate": 0,
-    "lastSync": "7:02:43 PM"
+    "lastSync": "7:07:21 PM"
   }
 }
