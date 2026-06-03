@@ -93,6 +93,20 @@
       "pin": "Alex-01",
       "notes": "",
       "createdAt": "2026-06-03"
+    },
+    {
+      "id": "mpyof0iuh3r",
+      "name": "MIKA CAFE",
+      "address": "5685 Vineland Rd Billing Orlando, FL 32819",
+      "contact": "Miguel Khabaze",
+      "email": "info@mikacafe.com",
+      "phone": "7869253469",
+      "maintContact": "MGUEL",
+      "maintPhone": "4077570617",
+      "plan": "Plan B",
+      "pin": "Mika-01",
+      "notes": "",
+      "createdAt": "2026-06-03"
     }
   ],
   "hoods": [
@@ -782,6 +796,6 @@
   "settings": {
     "ownerPass": "ICSP_DIRECTOR2026",
     "taxRate": 0,
-    "lastSync": "7:02:05 PM"
+    "lastSync": "7:02:43 PM"
   }
 }
