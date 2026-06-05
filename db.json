@@ -306,6 +306,15 @@
       "jobStatus": {
         "endTime": "08:51"
       }
+    },
+    {
+      "id": "mq195rrfjwk",
+      "clientId": "mq194lkspi7",
+      "num": "01",
+      "name": "BORDER GRILL (MAIN GRILL)",
+      "nfpa": "HEAVY",
+      "freq": "Semi-annual",
+      "createdAt": "2026-06-05"
     }
   ],
   "services": [
@@ -897,6 +906,6 @@
   "settings": {
     "ownerPass": "ICSP_DIRECTOR2026",
     "taxRate": 0,
-    "lastSync": "8:52:08 AM"
+    "lastSync": "2:22:41 PM"
   }
 }
