@@ -107,6 +107,20 @@
       "pin": "Mika-01",
       "notes": "",
       "createdAt": "2026-06-03"
+    },
+    {
+      "id": "mq194lkspi7",
+      "name": "BORDER GRILL",
+      "address": "5695-A Vineland Road Billing Orlando, FL 32819",
+      "contact": "VERONICA",
+      "email": "bg.fresh.mex@gmail.com",
+      "phone": "4072676272",
+      "maintContact": "ARIEL (MANAGER)",
+      "maintPhone": "4079288895",
+      "plan": "Plan B",
+      "pin": "BORDERGRILL-01",
+      "notes": "",
+      "createdAt": "2026-06-05"
     }
   ],
   "hoods": [
@@ -883,6 +897,6 @@
   "settings": {
     "ownerPass": "ICSP_DIRECTOR2026",
     "taxRate": 0,
-    "lastSync": "7:07:21 PM"
+    "lastSync": "8:52:08 AM"
   }
 }
