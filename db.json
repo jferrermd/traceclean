@@ -315,6 +315,15 @@
       "nfpa": "HEAVY",
       "freq": "Semi-annual",
       "createdAt": "2026-06-05"
+    },
+    {
+      "id": "mq197klvt1a",
+      "clientId": "mq194lkspi7",
+      "num": "02",
+      "name": "BORDER GRILL ( SECONDARY GRILL)",
+      "nfpa": "HEAVY",
+      "freq": "Semi-annual",
+      "createdAt": "2026-06-05"
     }
   ],
   "services": [
@@ -906,6 +915,6 @@
   "settings": {
     "ownerPass": "ICSP_DIRECTOR2026",
     "taxRate": 0,
-    "lastSync": "2:22:41 PM"
+    "lastSync": "2:23:36 PM"
   }
 }
