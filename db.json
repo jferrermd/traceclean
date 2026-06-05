@@ -288,7 +288,10 @@
       "name": "Mika Cafe",
       "nfpa": "MODERATE",
       "freq": "Semi-annual",
-      "createdAt": "2026-06-03"
+      "createdAt": "2026-06-03",
+      "jobStatus": {
+        "endTime": "08:51"
+      }
     }
   ],
   "services": [
