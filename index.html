@@ -514,8 +514,10 @@ function vAH(){
     ${s.adminNotes?`<div class="note ad"><div class="nl">Admin only</div><div class="nt">${s.adminNotes}</div></div>`:''}
     <div class="cband">📄 ${s.cert} · Next: ${fmt(s.nextDate)}</div>
     ${s.jsr?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
-      <button class="xs" style="background:#2980B9;color:#fff" onclick="printJSR('${s.jsr.num}')">🖨️ Print JSR</button>
-      <button class="xs" style="background:#1a73e8;color:#fff" onclick="emailJSR('${s.jsr.num}','${h.id}')">📧 Email JSR</button>
+      <button class="xs" style="background:#2980B9;color:#fff" onclick="printJSR('${s.jsr.num}')">🖨️ Print</button>
+      <button class="xs" style="background:#1a73e8;color:#fff" onclick="emailJSR('${s.jsr.num}','${h.id}')">📧 Email</button>
+      <button class="xs" style="background:#25D366;color:#fff" onclick="whatsappJSR('${s.jsr.num}','${h.id}')">💬 WhatsApp</button>
+      <button class="xs" style="background:#5B5EA6;color:#fff" onclick="nativeShareJSR('${s.jsr.num}','${h.id}')">↑ Share</button>
     </div>`:''}
     ${((s.photosBefore&&s.photosBefore.length)||(s.photosAfter&&s.photosAfter.length)||(s.photoBefore||s.photoAfter))?`
     <div style="margin-top:8px">
@@ -987,8 +989,10 @@ function vPH(){
         📋 View Job Service Report (JSR #${svs[0].jsr.num}) ▾
       </button>
       <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">
-        <button class="xs" onclick="printJSR('${svs[0].jsr.num}')" style="background:#2980B9;color:#fff">🖨️ Print / Download</button>
-        <button class="xs" onclick="emailJSR('${svs[0].jsr.num}','${h.id}')" style="background:#1a73e8;color:#fff">📧 Send by Email</button>
+        <button class="xs" onclick="printJSR('${svs[0].jsr.num}')" style="background:#2980B9;color:#fff">🖨️ Print</button>
+        <button class="xs" onclick="emailJSR('${svs[0].jsr.num}','${h.id}')" style="background:#1a73e8;color:#fff">📧 Email</button>
+        <button class="xs" onclick="whatsappJSR('${svs[0].jsr.num}','${h.id}')" style="background:#25D366;color:#fff">💬 WhatsApp</button>
+        <button class="xs" onclick="nativeShareJSR('${svs[0].jsr.num}','${h.id}')" style="background:#5B5EA6;color:#fff">↑ Share</button>
       </div>
       <div id="jsr-panel" style="display:none;margin-top:6px;border:1px solid var(--g200);border-radius:6px;overflow:hidden">
         ${buildJSRView(svs[0].jsr, svs[0].date, svs[0].tech, DB.clients.find(x=>x.id===h.clientId), h)}
@@ -2369,6 +2373,19 @@ function buildInvoiceHTML(c){
 function printInvoice(cid){
   const c=DB.clients.find(x=>x.id===cid);if(!c)return;
   const html=buildInvoiceHTML(c);
+  // Mobile: use native share or show in-page modal
+  if(isMobile){
+    if(navigator.share){
+      const hid=svc?svc.hoodId:'';
+      const msg=shareJSR(jsrNum,hid)||'JSR #'+jsrNum;
+      const qrUrl='https://verify.intelligentclean.org/#verify/'+hid;
+      navigator.share({title:'JSR #'+jsrNum+' — ICSP', text:msg, url:qrUrl})
+      .catch(()=>{});
+    } else {
+      whatsappJSR(jsrNum, svc?svc.hoodId:'');
+    }
+    return;
+  }
   const win=window.open('','_blank','width=900,height=700');
   win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Invoice — ${c.name}</title>
   <style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;padding:24px;max-width:800px;margin:0 auto}@media print{@page{margin:15mm}.no-print{display:none!important}}</style>
@@ -2800,7 +2817,90 @@ function sendStripePaymentLink(estId){
 
 
 
+
+function shareJSR(jsrNum, hid){
+  const svc=DB.services.find(s=>s.jsr&&s.jsr.num===jsrNum);
+  if(!svc)return;
+  const h=DB.hoods.find(x=>x.id===hid);
+  const c=DB.clients.find(x=>x.id===(h?h.clientId:''));
+  const jsr=svc.jsr;
+  const qrUrl='https://verify.intelligentclean.org/#verify/'+(hid||'');
+  const msg=`✅ *JOB SERVICE REPORT — ICSP*
+
+`+
+    `📋 *JSR #:* ${jsrNum}
+`+
+    `📅 *Date:* ${svc.date}
+`+
+    `🏢 *Client:* ${c?c.name:'—'}
+`+
+    `🔧 *Hood:* #${h?h.num:'—'} — ${h?h.name:'—'}
+`+
+    `👷 *Technician:* ${svc.tech||'—'}
+`+
+    `📊 *Condition:* ${svc.condition||'—'}
+
+`+
+    `*CHECKLIST:*
+`+
+    `${jsr.filters?'✓':'✗'} Filters cleaned
+`+
+    `${jsr.fans?'✓':'✗'} Fans cleaned
+`+
+    `${jsr.ducts?'✓':'✗'} Ducts degreased
+`+
+    `${jsr.hood?'✓':'✗'} Hood surfaces cleaned
+`+
+    `${jsr.sticker?'✓':'✗'} Hood sticker updated
+`+
+    `${jsr.problems?'\n⚠️ *Issues found:* '+jsr.problems:''}
+
+`+
+    `📸 *View full report + photos:*
+${qrUrl}
+
+`+
+    `_Intelligent Clean Steel Pro_
+_IKECA MFS-S000024 · NFPA 96_
+_(407) 676-2086_`;
+  return msg;
+}
+
+function whatsappJSR(jsrNum, hid){
+  const svc=DB.services.find(s=>s.jsr&&s.jsr.num===jsrNum);
+  const h=DB.hoods.find(x=>x.id===hid);
+  const c=DB.clients.find(x=>x.id===(h?h.clientId:''));
+  const phone=(c&&(c.maintPhone||c.phone)||'').replace(/\D/g,'');
+  const msg=shareJSR(jsrNum,hid);
+  if(!msg)return;
+  const url=phone?`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`:`https://wa.me/?text=${encodeURIComponent(msg)}`;
+  window.open(url,'_blank');
+}
+
+function smsJSR(jsrNum, hid){
+  const svc=DB.services.find(s=>s.jsr&&s.jsr.num===jsrNum);
+  const h=DB.hoods.find(x=>x.id===hid);
+  const c=DB.clients.find(x=>x.id===(h?h.clientId:''));
+  const phone=(c&&(c.maintPhone||c.phone)||'').replace(/\D/g,'');
+  const msg=shareJSR(jsrNum,hid);
+  if(!msg)return;
+  window.open(`sms:${phone}?body=${encodeURIComponent(msg)}`,'_blank');
+}
+
+function nativeShareJSR(jsrNum, hid){
+  const msg=shareJSR(jsrNum,hid);
+  if(!msg)return;
+  if(navigator.share){
+    navigator.share({title:'JSR #'+jsrNum+' — ICSP', text:msg})
+    .catch(()=>{});
+  } else {
+    whatsappJSR(jsrNum,hid);
+  }
+}
+
 function printJSR(jsrNum){
+  // On mobile, use native share instead of popup (popups blocked on mobile)
+  const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   const svc=DB.services.find(s=>s.jsr&&s.jsr.num===jsrNum);
   if(!svc)return;
   const h=DB.hoods.find(x=>x.id===svc.hoodId);
@@ -2825,6 +2925,19 @@ function printJSR(jsrNum){
         </tr>
       </table>
     </div>`:'<div style="margin-top:12px;color:#888;font-size:11px">No photos attached to this service.</div>';
+  // Mobile: use native share or show in-page modal
+  if(isMobile){
+    if(navigator.share){
+      const hid=svc?svc.hoodId:'';
+      const msg=shareJSR(jsrNum,hid)||'JSR #'+jsrNum;
+      const qrUrl='https://verify.intelligentclean.org/#verify/'+hid;
+      navigator.share({title:'JSR #'+jsrNum+' — ICSP', text:msg, url:qrUrl})
+      .catch(()=>{});
+    } else {
+      whatsappJSR(jsrNum, svc?svc.hoodId:'');
+    }
+    return;
+  }
   const win=window.open('','_blank','width=900,height=700');
   win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8">
   <title>JSR #${jsrNum} — ${c?c.name:''}</title>
