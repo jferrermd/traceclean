@@ -324,6 +324,15 @@
       "nfpa": "HEAVY",
       "freq": "Semi-annual",
       "createdAt": "2026-06-05"
+    },
+    {
+      "id": "mq43ut7zj1e",
+      "clientId": "mq194lkspi7",
+      "num": "03",
+      "name": "BORDER GRILL ( 3ER GRILL)",
+      "nfpa": "HEAVY",
+      "freq": "Semi-annual",
+      "createdAt": "2026-06-07"
     }
   ],
   "services": [
