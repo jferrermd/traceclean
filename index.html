@@ -513,6 +513,10 @@ function vAH(){
     ${s.clientNotes?`<div class="note cl"><div class="nl">Client alert</div><div class="nt">${s.clientNotes}</div></div>`:''}
     ${s.adminNotes?`<div class="note ad"><div class="nl">Admin only</div><div class="nt">${s.adminNotes}</div></div>`:''}
     <div class="cband">📄 ${s.cert} · Next: ${fmt(s.nextDate)}</div>
+    ${s.jsr?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+      <button class="xs" style="background:#2980B9;color:#fff" onclick="printJSR('${s.jsr.num}')">🖨️ Print JSR</button>
+      <button class="xs" style="background:#1a73e8;color:#fff" onclick="emailJSR('${s.jsr.num}','${h.id}')">📧 Email JSR</button>
+    </div>`:''}
     ${((s.photosBefore&&s.photosBefore.length)||(s.photosAfter&&s.photosAfter.length)||(s.photoBefore||s.photoAfter))?`
     <div style="margin-top:8px">
       ${(s.photosBefore&&s.photosBefore.length)?(s.photosBefore.map(p=>`<div class="pc" style="display:inline-block;width:calc(50% - 4px);margin:2px;vertical-align:top"><span class="plbl">BEFORE</span><img src="${p}" style="width:100%;height:120px;object-fit:cover;display:block"></div>`).join('')):(s.photoBefore?`<div class="pc" style="display:inline-block;width:calc(50% - 4px);margin:2px;vertical-align:top"><span class="plbl">BEFORE</span><img src="${s.photoBefore}" style="width:100%;height:120px;object-fit:cover;display:block"></div>`:'') }
@@ -814,7 +818,15 @@ function savSvc(hid,num){
   const jsr={num:jsrNum,time:jsrTime,schedWith:jsrSchedWith,meetWith:jsrMeetWith,crewLeader:jsrCrewLeader,notes:jsrNotes,staffName:jsrStaffName,problem:jsrProblem,probNotes:jsrProbNotes,cc:jsrCC,soapLevel,cust:jsrCust,custSig:jsrCustSig};
   const svc={id:uid(),hoodId:hid,date,tech,condition:document.getElementById('sc').value,publicNotes:document.getElementById('sp').value,clientNotes:document.getElementById('sl').value,adminNotes:document.getElementById('sa').value,nextDate:document.getElementById('sn').value,signature:sig,photosBefore:window._beforePhotos||[],photosAfter:window._afterPhotos||[],photoBefore:(window._beforePhotos||[])[0]||'',photoAfter:(window._afterPhotos||[])[0]||'',cert:'NFPA96-'+num+'-'+date.replace(/-/g,''),jsr,createdAt:today()};
   window._beforePhotos=[];window._afterPhotos=[];window._custSigData='';
-  DB.services.push(svc);sdb();alert('Service logged. Certificate issued.');sv('admin_hood',{hid});
+  DB.services.push(svc);sdb();
+  if(localStorage.getItem('tc_ghtoken')){
+    pushToGitHub(false).then(ok=>{
+      alert('Service logged. Certificate issued.\n\n☁️ '+(ok?'Synced to cloud successfully.':'Cloud sync failed — push manually from Director panel.'));
+    });
+  } else {
+    alert('Service logged. Certificate issued.\n\n⚠️ SYNC NEEDED: This device has no cloud token. Ask the Director to push data from the system (Data → Cloud Sync → Push) so this service appears on all devices.');
+  }
+  sv('admin_hood',{hid});
 }
 
 function vNC(){document.getElementById('main').innerHTML=`
@@ -1035,10 +1047,28 @@ function vOD(){
 }
 
 // ── OWNER: TEAM ─────────────────────────────────────────────────────────
+
+function genTechURL(){
+  const token=localStorage.getItem('tc_ghtoken')||'';
+  if(!token){alert('Set your GitHub token first in Data → Cloud Sync, then come back here.');return;}
+  const encoded=btoa(token);
+  const url=window.location.origin+window.location.pathname+'#tech-setup/'+encoded;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(url).then(()=>alert('✅ URL copied!\n\nSend this link to your technician. They open it ONCE on their phone and the cloud sync is configured automatically.\n\n'+url));
+  } else {
+    prompt('Send this URL to your technician (they open it once on their phone):',url);
+  }
+}
+
 function vOT(){
   document.getElementById('main').innerHTML=`
   <button class="bk" onclick="sv('owner_dash')">← Director Panel</button>
-  <div class="fxb" style="margin-bottom:12px"><div style="font-size:14px;font-weight:800;color:var(--navy)">👥 Team Access Codes</div><button class="pri sm" onclick="sv('owner_new_tech')">+ New code</button></div>
+  <div class="fxb" style="margin-bottom:10px"><div style="font-size:14px;font-weight:800;color:var(--navy)">👥 Team Access Codes</div><button class="pri sm" onclick="sv('owner_new_tech')">+ New code</button></div>
+  <div style="background:#EBF5FB;border-radius:8px;padding:12px;margin-bottom:12px;border:1px solid #AED6F1">
+    <div style="font-size:12px;font-weight:700;color:#1F618D;margin-bottom:4px">📱 Setup Cloud Sync on Technician Phone</div>
+    <div style="font-size:11px;color:#555;margin-bottom:8px;line-height:1.5">Generate a one-time URL. Technician opens it once on their phone → service reports sync automatically to all devices.</div>
+    <button class="pri sm" onclick="genTechURL()">🔗 Generate Technician Setup URL</button>
+  </div>
   <div class="card">
     <div class="mu" style="margin-bottom:10px">Technicians use these codes to log into the Field (Level 2) access. Only you can create or revoke codes.</div>
     ${DB.techs.length?DB.techs.map(t=>`
@@ -3350,7 +3380,19 @@ async function pullFromGitHub(manual){
 }
 
 // ── HASH ROUTING ─────────────────────────────────────────────────────────
-function handleHash(){try{const h=window.location.hash;if(h.startsWith('#verify/')){const id=h.replace('#verify/','');const hd=DB.hoods.find(x=>x.id===id);if(hd){S.hid=hd.id;S.v='pub_hood';}else{S.hid=id;S.v='pub_not_found';}}}catch(e){}}
+function handleHash(){try{const h=window.location.hash;
+  if(h.startsWith('#tech-setup/')){
+    try{
+      const encoded=h.replace('#tech-setup/','');
+      const token=atob(encoded);
+      if(token.startsWith('ghp_')){
+        localStorage.setItem('tc_ghtoken',token);
+        window.location.hash='';
+        alert('✅ Cloud sync configured on this device!\nService reports will now sync automatically.');
+      }
+    }catch(e){}
+    return;
+  }if(h.startsWith('#verify/')){const id=h.replace('#verify/','');const hd=DB.hoods.find(x=>x.id===id);if(hd){S.hid=hd.id;S.v='pub_hood';}else{S.hid=id;S.v='pub_not_found';}}}catch(e){}}
 window.addEventListener('hashchange',()=>{try{handleHash();render();}catch(e){}});
 ldb();
 // Clean any old token from DB object (stored separately now)
