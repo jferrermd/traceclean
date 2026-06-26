@@ -109,6 +109,20 @@
       "pin": "BORDERGRILL-01",
       "notes": "",
       "createdAt": "2026-06-05"
+    },
+    {
+      "id": "mqv7ih9bpdj",
+      "name": "SUSHI SAKE",
+      "address": "840 Orlando Ave Winter Park, FL 32789",
+      "contact": "MELISSA ENRIQUEZ",
+      "email": "enriquezmelissa20@yahoo.com",
+      "phone": "(786)340-9674",
+      "maintContact": "MELISSA ENRIQUEZ",
+      "maintPhone": "(786)340-9674",
+      "plan": "",
+      "pin": "Sake-01",
+      "notes": "",
+      "createdAt": "2026-06-26"
     }
   ],
   "hoods": [
